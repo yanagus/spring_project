@@ -123,3 +123,4 @@ CREATE INDEX IX_Position_name ON Position (name);
 
 CREATE INDEX IX_Organization_Name ON Organization (name);
 CREATE INDEX IX_Organization_Is_Active ON Organization (is_active);
+
