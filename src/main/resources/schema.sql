@@ -1,11 +1,12 @@
 CREATE TABLE IF NOT EXISTS Organization (
     id          INTEGER  PRIMARY KEY AUTO_INCREMENT,
+    version     INTEGER NOT NULL,
     name        VARCHAR(50) NOT NULL,
     full_name   VARCHAR(80) NOT NULL,
     inn         VARCHAR(12) NOT NULL UNIQUE,
     kpp         CHAR(9) NOT NULL,
     phone       VARCHAR(25),
-    address     VARCHAR(50) NOT NULL,
+    address     VARCHAR(100) NOT NULL,
     is_active   BOOLEAN DEFAULT FALSE
 );
 
@@ -21,9 +22,10 @@ COMMENT ON COLUMN Organization.is_active IS 'Статус организации
 
 CREATE TABLE IF NOT EXISTS Office (
     id          INTEGER  PRIMARY KEY AUTO_INCREMENT,
+    version     INTEGER NOT NULL,
     name        VARCHAR(50) NOT NULL,
     phone       VARCHAR(25),
-    address     VARCHAR(50) NOT NULL,
+    address     VARCHAR(100) NOT NULL,
     is_active   BOOLEAN DEFAULT FALSE,
     org_id      INTEGER REFERENCES Organization (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
@@ -43,7 +45,7 @@ CREATE TABLE IF NOT EXISTS Country (
     name    VARCHAR(50)
 );
 
-COMMENT ON TABLE Country IS 'Справочник Общероссийского классификатора стран мира';
+COMMENT ON TABLE Country IS 'Справочник общероссийского классификатора стран мира';
 COMMENT ON COLUMN Country.id IS 'Уникальный идентификатор страны, с автоприращением';
 COMMENT ON COLUMN Country.code IS 'Цифровой код страны, обязателен к заполнению, уникален';
 COMMENT ON COLUMN Country.name IS 'Название страны';
@@ -70,11 +72,12 @@ COMMENT ON COLUMN Position.name IS 'Название должности';
 
 CREATE TABLE IF NOT EXISTS Employee (
     id              INTEGER  PRIMARY KEY AUTO_INCREMENT,
+    version         INTEGER NOT NULL,
     first_name      VARCHAR(50) NOT NULL,
     second_name     VARCHAR(50),
     middle_name     VARCHAR(50),
     last_name       VARCHAR(50),
-    phone           VARCHAR(50),
+    phone           VARCHAR(25),
     is_identified   BOOLEAN DEFAULT FALSE,
     pos_id          SMALLINT REFERENCES Position (id) ON DELETE NO ACTION ON UPDATE CASCADE,
     country_id      SMALLINT REFERENCES Country (id) ON DELETE NO ACTION ON UPDATE CASCADE,
