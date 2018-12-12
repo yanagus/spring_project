@@ -53,7 +53,7 @@ public class OfficeServiceImpl implements OfficeService {
     @Transactional(readOnly = true)
     public OfficeView findById(Integer id) {
         if(id!=1) {
-            throw new EntityNotFoundException("Not found employee with id is " + id);
+            throw new EntityNotFoundException("Not found office with id is " + id);
         }
         return new OfficeView("1", "Офис", "+7 (495) 322-2233", "г. Москва", true, "1");
     }

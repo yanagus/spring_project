@@ -2,6 +2,7 @@ package work.view;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 public class OfficeView {
 
@@ -35,5 +36,24 @@ public class OfficeView {
         this.address = address;
         this.isActive = isActive;
         this.orgId = orgId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OfficeView that = (OfficeView) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(phone, that.phone) &&
+                Objects.equals(address, that.address) &&
+                Objects.equals(isActive, that.isActive) &&
+                Objects.equals(orgId, that.orgId);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, name, phone, address, isActive, orgId);
     }
 }

@@ -1,7 +1,7 @@
 INSERT INTO Organization (version, name, full_name, inn, kpp, phone, address) VALUES (0, 'Орг', 'Организация', '0123456789',
 '123456789', '+7(845)222-22-22', 'г. Саратов');
 
-INSERT INTO Organization (version, name, full_name, inn, kpp, phone, address) VALUES (0, 'OCS', 'OCS Distibution', '1234567890',
+INSERT INTO Organization (version, name, full_name, inn, kpp, phone, address) VALUES (0, 'OCS', 'OCS Distribution', '1234567890',
 '123456789', '+7 (495) 995-2575', '108811, г. Москва, Киевское шоссе, Румянцево, офисный парк «Комсити» д.6 стр.1');
 
 INSERT INTO Office (version, name, phone, address, is_active, org_id) VALUES (0, 'Офис Организации', '+7(845)222-22-33',
