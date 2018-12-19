@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import work.controller.EntityNotFoundException;
-import work.service.employee.EmployeeService;
+import work.service.IService;
 import work.view.EmployeeView;
 
 import java.util.List;
@@ -18,10 +18,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(value = "/user", produces = APPLICATION_JSON_VALUE)
 public class EmployeeController {
 
-    private final EmployeeService employeeService;
+    private final IService<EmployeeView, Integer> employeeService;
 
     @Autowired
-    public EmployeeController(EmployeeService employeeService) {
+    public EmployeeController(IService<EmployeeView, Integer> employeeService) {
         this.employeeService = employeeService;
     }
 
@@ -33,7 +33,7 @@ public class EmployeeController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public List<EmployeeView> employees() {
-        return employeeService.employees();
+        return employeeService.findAll();
     }
 
     /**
@@ -44,12 +44,12 @@ public class EmployeeController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public EmployeeView employeeById(@PathVariable("id") String orgIdentifier) {
         if (!orgIdentifier.matches("[\\d]+")) {
-            throw new EntityNotFoundException("Not found employee with id is " + orgIdentifier);
+            throw new EntityNotFoundException("Could not find employee " + orgIdentifier);
         }
         int id = Integer.parseInt(orgIdentifier);
         EmployeeView employeeView = employeeService.findById(id);
         if(employeeView == null) {
-            throw new EntityNotFoundException("Not found employee with id is " + id);
+            throw new EntityNotFoundException("Could not find employee " + id);
         }
         return employeeView;
     }

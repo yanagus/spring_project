@@ -1,10 +1,9 @@
-package work.service.office;
+package work.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import work.controller.EntityNotFoundException;
-import work.dao.office.OfficeDao;
+import work.dao.IGenericDao;
 import work.model.Office;
 import work.model.mapper.MapperFacade;
 import work.view.OfficeView;
@@ -12,17 +11,18 @@ import work.view.OfficeView;
 import java.util.List;
 
 /**
- * {@inheritDoc}
+ * Сервис офиса
  */
 @Service
-public class OfficeServiceImpl implements OfficeService {
+public class OfficeServiceImpl implements IService<OfficeView, Integer> {
 
-    private final OfficeDao dao;
+    private final IGenericDao<Office, Integer> dao;
     private final MapperFacade mapperFacade;
 
     @Autowired
-    public OfficeServiceImpl(OfficeDao dao, MapperFacade mapperFacade) {
+    public OfficeServiceImpl(IGenericDao<Office, Integer> dao, MapperFacade mapperFacade) {
         this.dao = dao;
+        this.dao.setClazz(Office.class);
         this.mapperFacade = mapperFacade;
     }
 
@@ -41,7 +41,7 @@ public class OfficeServiceImpl implements OfficeService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<OfficeView> offices() {
+    public List<OfficeView> findAll() {
         List<Office> all = dao.all();
         return mapperFacade.mapAsList(all, OfficeView.class);
     }
@@ -52,9 +52,7 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     @Transactional(readOnly = true)
     public OfficeView findById(Integer id) {
-        if(id!=1) {
-            throw new EntityNotFoundException("Not found office with id is " + id);
-        }
-        return new OfficeView("1", "Офис", "+7 (495) 322-2233", "г. Москва", true, "1");
+        Office office = dao.loadById(id);
+        return mapperFacade.map(office, OfficeView.class);
     }
 }

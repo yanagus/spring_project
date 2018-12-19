@@ -41,6 +41,7 @@ COMMENT ON COLUMN Office.org_id IS
 
 CREATE TABLE IF NOT EXISTS Country (
     id      SMALLINT  PRIMARY KEY AUTO_INCREMENT,
+    version INTEGER NOT NULL,
     code    CHAR(3)  NOT NULL UNIQUE,
     name    VARCHAR(50)
 );
@@ -52,6 +53,7 @@ COMMENT ON COLUMN Country.name IS 'Название страны';
 
 CREATE TABLE IF NOT EXISTS Document (
     id       TINYINT  PRIMARY KEY AUTO_INCREMENT,
+    version  INTEGER NOT NULL,
     code     CHAR(2)  NOT NULL UNIQUE,
     name     VARCHAR(50)
 );
@@ -63,6 +65,7 @@ COMMENT ON COLUMN Document.name IS 'Название документа';
 
 CREATE TABLE IF NOT EXISTS Position (
     id       SMALLINT  PRIMARY KEY AUTO_INCREMENT,
+    version  INTEGER NOT NULL,
     name     VARCHAR(50) NOT NULL
 );
 
@@ -99,6 +102,7 @@ COMMENT ON COLUMN Employee.office_id IS
 
 CREATE TABLE IF NOT EXISTS Document_Data (
     id          INTEGER  PRIMARY KEY AUTO_INCREMENT,
+    version     INTEGER NOT NULL,
     doc_id      TINYINT REFERENCES Document (id) ON DELETE NO ACTION ON UPDATE CASCADE,
     number      VARCHAR(30) NOT NULL UNIQUE,
     date        DATE,

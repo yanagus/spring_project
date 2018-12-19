@@ -65,7 +65,7 @@ public class TestOrganizationController {
     public void validateOrganization3() throws Exception {
         mockMvc.perform(get("/organization/hh")).andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.message").value("Not found organization with id is hh"));
+                .andExpect(jsonPath("$.error").value("Could not find organization hh"));
     }
 
     @Test

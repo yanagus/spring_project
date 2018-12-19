@@ -6,13 +6,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
 import javax.persistence.Version;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Должность работника
  */
 @Entity
-public class Position {
+public class Position implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -10,6 +10,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ import java.util.Set;
  * Офис
  */
 @Entity
-public class Office {
+public class Office implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

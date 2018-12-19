@@ -1,9 +1,9 @@
-package work.service.organization;
+package work.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import work.dao.organization.OrganizationDao;
+import work.dao.IGenericDao;
 import work.model.Organization;
 import work.model.mapper.MapperFacade;
 import work.view.OrganizationView;
@@ -11,17 +11,18 @@ import work.view.OrganizationView;
 import java.util.List;
 
 /**
- * {@inheritDoc}
+ * Сервис организации
  */
 @Service
-public class OrganizationServiceImpl implements OrganizationService {
+public class OrganizationServiceImpl implements IService<OrganizationView, Integer> {
 
-    private final OrganizationDao dao;
+    private final IGenericDao<Organization, Integer> dao;
     private final MapperFacade mapperFacade;
 
     @Autowired
-    public OrganizationServiceImpl(OrganizationDao dao, MapperFacade mapperFacade) {
+    public OrganizationServiceImpl(IGenericDao<Organization, Integer> dao, MapperFacade mapperFacade) {
         this.dao = dao;
+        this.dao.setClazz(Organization.class);
         this.mapperFacade = mapperFacade;
     }
 
@@ -40,7 +41,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<OrganizationView> organizations() {
+    public List<OrganizationView> findAll() {
         List<Organization> all = dao.all();
         return mapperFacade.mapAsList(all, OrganizationView.class);
     }

@@ -6,13 +6,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
 import javax.persistence.Version;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Вид документа, удостоверяющего личность физического лица
  */
 @Entity
-public class Document {
+public class Document implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

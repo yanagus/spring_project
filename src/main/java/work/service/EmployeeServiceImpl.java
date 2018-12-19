@@ -1,10 +1,9 @@
-package work.service.employee;
+package work.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import work.controller.EntityNotFoundException;
-import work.dao.employee.EmployeeDao;
+import work.dao.IGenericDao;
 import work.model.Employee;
 import work.model.mapper.MapperFacade;
 import work.view.EmployeeView;
@@ -12,17 +11,18 @@ import work.view.EmployeeView;
 import java.util.List;
 
 /**
- * {@inheritDoc}
+ * Сервис работника
  */
 @Service
-public class EmployeeServiceImpl  implements EmployeeService {
+public class EmployeeServiceImpl  implements IService<EmployeeView, Integer> {
 
-    private final EmployeeDao dao;
+    private final IGenericDao<Employee, Integer> dao;
     private final MapperFacade mapperFacade;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeDao dao, MapperFacade mapperFacade) {
+    public EmployeeServiceImpl(IGenericDao<Employee, Integer> dao, MapperFacade mapperFacade) {
         this.dao = dao;
+        this.dao.setClazz(Employee.class);
         this.mapperFacade = mapperFacade;
     }
 
@@ -32,7 +32,7 @@ public class EmployeeServiceImpl  implements EmployeeService {
     @Override
     @Transactional
     public void add(EmployeeView view) {
-        Employee employee = new Employee(view.first_name, view.second_name, view.middle_name, view.last_name, view.phone,
+        Employee employee = new Employee(view.firstName, view.secondName, view.middleName, view.lastName, view.phone,
                 view.isIdentified, null, null, null);
         dao.save(employee);
     }
@@ -42,7 +42,7 @@ public class EmployeeServiceImpl  implements EmployeeService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<EmployeeView> employees() {
+    public List<EmployeeView> findAll() {
         List<Employee> all = dao.all();
         return mapperFacade.mapAsList(all, EmployeeView.class);
     }
@@ -53,10 +53,7 @@ public class EmployeeServiceImpl  implements EmployeeService {
     @Override
     @Transactional(readOnly = true)
     public EmployeeView findById(Integer id) {
-        if(id!=2) {
-            throw new EntityNotFoundException("Not found employee with id is " + id);
-        }
-        return new EmployeeView("2", "Иван", "Иванович", "", "Иванов",
-                "+7 (495) 995-2575", false, "1", "1", "2");
+        Employee employee = dao.loadById(id);
+        return mapperFacade.map(employee, EmployeeView.class);
     }
 }

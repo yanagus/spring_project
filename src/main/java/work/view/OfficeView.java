@@ -2,7 +2,6 @@ package work.view;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 public class OfficeView {
 
@@ -21,39 +20,31 @@ public class OfficeView {
 
     public Boolean isActive;
 
-    public String orgId;
+    public OrganizationView organization;
 
     public OfficeView() {
     }
 
-    //конструктор для заглушки
     public OfficeView(String id, @Size(max = 50) @NotEmpty(message = "name cannot be null") String name,
                       @Size(max = 25) String phone, @Size(max = 100) @NotEmpty(message = "address cannot be null") String address,
-                      Boolean isActive, String orgId) {
+                      Boolean isActive, OrganizationView organization) {
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.address = address;
         this.isActive = isActive;
-        this.orgId = orgId;
+        this.organization = organization;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OfficeView that = (OfficeView) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(phone, that.phone) &&
-                Objects.equals(address, that.address) &&
-                Objects.equals(isActive, that.isActive) &&
-                Objects.equals(orgId, that.orgId);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id, name, phone, address, isActive, orgId);
+    public String toString() {
+        return "OfficeView{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                ", isActive=" + isActive +
+                ", organization=" + organization +
+                '}';
     }
 }

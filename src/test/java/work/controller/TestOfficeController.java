@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import work.Application;
 import work.view.OfficeView;
+import work.view.OrganizationView;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -42,7 +43,8 @@ public class TestOfficeController {
     public void testOfficeById() {
         OfficeView officeView1 = restTemplate.getForObject("/office/1", OfficeView.class);
         OfficeView officeView2 = new OfficeView("1", "Офис", "+7 (495) 322-2233",
-                "г. Москва", true, "1");
+                "г. Москва", true, new OrganizationView("1", "Орг", "Организация", "0123456789",
+                "123456789", "+7(845)222-22-22", "г. Саратов", false));
         assertEquals(officeView1, officeView2);
         HttpHeaders headers = restTemplate.headForHeaders("/office/1");
         assertTrue(headers.getContentType().includes(MediaType.APPLICATION_JSON));
@@ -51,7 +53,7 @@ public class TestOfficeController {
     @Test
     public void testOfficeById2() {
         String message = restTemplate.getForObject("/office/3", String.class);
-        String response = "{\"message\":\"Not found office with id is 3\"}";
+        String response = "{\"error\":\"Could not find office 3\"}";
         assertEquals(message, response);
     }
 }

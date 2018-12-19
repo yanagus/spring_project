@@ -6,12 +6,13 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
-import javax.persistence.Version;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -20,7 +21,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "Document_Data")
-public class DocumentData {
+public class DocumentData implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

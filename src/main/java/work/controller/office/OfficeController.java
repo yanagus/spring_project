@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import work.controller.EntityNotFoundException;
-import work.service.office.OfficeService;
+import work.service.IService;
 import work.view.OfficeView;
 
 import java.util.List;
@@ -18,10 +18,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(value = "/office", produces = APPLICATION_JSON_VALUE)
 public class OfficeController {
 
-    private final OfficeService officeService;
+    private final IService<OfficeView, Integer> officeService;
 
     @Autowired
-    public OfficeController(OfficeService officeService) {
+    public OfficeController(IService<OfficeView, Integer> officeService) {
         this.officeService = officeService;
     }
 
@@ -32,7 +32,7 @@ public class OfficeController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public List<OfficeView> offices() {
-        return officeService.offices();
+        return officeService.findAll();
     }
 
     /**
@@ -40,15 +40,15 @@ public class OfficeController {
      * @param orgIdentifier id
      * @return OfficeView
      */
-    @RequestMapping(value = "/{id:[\\d]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public OfficeView officeById(@PathVariable("id") String orgIdentifier) {
         if (!orgIdentifier.matches("[\\d]+")) {
-            throw new EntityNotFoundException("Not found office with id is " + orgIdentifier);
+            throw new EntityNotFoundException("Could not find office " + orgIdentifier);
         }
         int id = Integer.parseInt(orgIdentifier);
         OfficeView officeView = officeService.findById(id);
         if(officeView == null) {
-            throw new EntityNotFoundException("Not found office with id is " + id);
+            throw new EntityNotFoundException("Could not find office " + id);
         }
         return officeView;
     }

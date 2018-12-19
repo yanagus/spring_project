@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
 import javax.persistence.CascadeType;
+import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -18,7 +20,7 @@ import java.util.Set;
  * Работник
  */
 @Entity
-public class Employee {
+public class Employee implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -179,6 +181,9 @@ public class Employee {
     }
 
     public Set<DocumentData> getDocumentDataSet() {
+        if (documentDataSet == null) {
+            documentDataSet = new HashSet<>();
+        }
         return documentDataSet;
     }
 

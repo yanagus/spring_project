@@ -19,7 +19,7 @@ public interface MapperFacade {
     <S, D> D map(S sourceObject, Class<D> destinationClass);
 
     /**
-     * Запись занных из sourceObject в destinationObject
+     * Запись данных из sourceObject в destinationObject
      *
      * @param sourceObject
      * @param destinationObject
@@ -29,7 +29,7 @@ public interface MapperFacade {
     <S, D> void map(S sourceObject, D destinationObject);
 
     /**
-     * Преобразование коллекции оъектов
+     * Преобразование коллекции объектов
      *
      * @param source
      * @param destinationClass
