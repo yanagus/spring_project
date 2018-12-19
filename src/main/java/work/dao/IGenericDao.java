@@ -16,7 +16,7 @@ public interface IGenericDao<T extends Serializable, ID extends Number> {
     void setClazz(Class<T> clazzToSet);
 
     /**
-     * Получить все список Entity
+     * Получить список Entity
      *
      * @return List
      */

@@ -1,6 +1,9 @@
 package work.view;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Set;
@@ -27,13 +30,16 @@ public class EmployeeView {
 
     public Boolean isIdentified;
 
+    @JsonUnwrapped
     public PositionView position;
 
+    @JsonUnwrapped
     public CountryView country;
 
     @JsonIgnore
     public OfficeView office;
 
+    @JsonManagedReference
     public Set<DocumentDataView> documentDataSet;
 
     public EmployeeView() {

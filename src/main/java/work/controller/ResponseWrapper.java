@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-
+/**
+ * Обработка ответов контроллеров
+ */
 @RestControllerAdvice
 public class ResponseWrapper implements ResponseBodyAdvice<Object> {
 
@@ -19,6 +21,12 @@ public class ResponseWrapper implements ResponseBodyAdvice<Object> {
         return true;
     }
 
+    /**
+     * Обработчик ошибок
+     *
+     * @param ex ошибка класса EntityNotFoundException
+     * @return сообщение ошибки типа ResponseMsg
+     */
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseMsg handleNotFoundException(EntityNotFoundException ex) {
         return new ResponseMsg(ex.getMessage());
