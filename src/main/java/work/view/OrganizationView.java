@@ -1,8 +1,11 @@
 package work.view;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+@JsonPropertyOrder({"id", "name", "fullName", "inn", "kpp", "address", "phone", "isActive"})
 public class OrganizationView {
 
     private String id;

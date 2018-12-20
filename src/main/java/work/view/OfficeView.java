@@ -1,28 +1,32 @@
 package work.view;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 public class OfficeView {
 
+    @JsonView(Views.GetByIdView.class)
     private String id;
 
     @Size(max = 50)
     @NotEmpty(message = "name cannot be null")
+    @JsonView(Views.GetByIdView.class)
     private String name;
 
     @Size(max = 25)
+    @JsonView(Views.GetByIdView.class)
     private String phone;
 
     @Size(max = 100)
     @NotEmpty(message = "address cannot be null")
+    @JsonView(Views.GetByIdView.class)
     private String address;
 
+    @JsonView(Views.GetByIdView.class)
     private Boolean isActive;
 
-    @JsonIgnore
     private OrganizationView organization;
 
     public OfficeView() {

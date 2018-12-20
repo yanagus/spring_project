@@ -1,7 +1,5 @@
 package work.view;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.validation.constraints.NotEmpty;
@@ -10,10 +8,8 @@ import java.util.Date;
 
 public class DocumentDataView {
 
-    @JsonIgnore
     private String id;
 
-    @JsonUnwrapped
     private DocumentView document;
 
     @Size(max = 30)

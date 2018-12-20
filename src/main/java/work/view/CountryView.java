@@ -1,6 +1,5 @@
 package work.view;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
@@ -8,7 +7,6 @@ import javax.validation.constraints.Size;
 
 public class CountryView {
 
-    @JsonIgnore
     private String id;
 
     @Size(max = 3)

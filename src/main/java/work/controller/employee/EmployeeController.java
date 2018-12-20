@@ -1,5 +1,6 @@
 package work.controller.employee;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import work.controller.EntityNotFoundException;
 import work.service.IService;
 import work.view.EmployeeView;
+import work.view.Views;
 
 import java.util.List;
 
@@ -42,6 +44,7 @@ public class EmployeeController {
      * @return EmployeeView
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @JsonView(Views.GetByIdView.class)
     public EmployeeView employeeById(@PathVariable("id") String orgIdentifier) {
         if (!orgIdentifier.matches("[\\d]+")) {
             throw new EntityNotFoundException("Could not find employee " + orgIdentifier);
