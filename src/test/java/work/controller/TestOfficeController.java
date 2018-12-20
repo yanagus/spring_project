@@ -20,6 +20,10 @@ import work.view.OrganizationView;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {Application.class})
@@ -31,29 +35,24 @@ public class TestOfficeController {
 
     private MockMvc mockMvc;
 
-    private RestTemplate restTemplate;
-
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
     }
 
     @Test
-    public void testOfficeById() {
-        OfficeView officeView1 = restTemplate.getForObject("/office/1", OfficeView.class);
-        OfficeView officeView2 = new OfficeView("1", "Офис", "+7 (495) 322-2233",
-                "г. Москва", true, new OrganizationView("1", "Орг", "Организация", "0123456789",
-                "123456789", "+7(845)222-22-22", "г. Саратов", false));
-        assertEquals(officeView1, officeView2);
-        HttpHeaders headers = restTemplate.headForHeaders("/office/1");
-        assertTrue(headers.getContentType().includes(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
-    public void testOfficeById2() {
-        String message = restTemplate.getForObject("/office/3", String.class);
-        String response = "{\"error\":\"Could not find office 3\"}";
-        assertEquals(message, response);
+    public void validateOfficeById() throws Exception {
+        String office1 = "{\"data\":{\"id\":\"1\",\"name\":\"Офис Организации\",\"address\":\"г. Саратов, пр. Кирова\"," +
+                "\"phone\":\"+7(845)222-22-33\",\"isActive\":true}}";
+        mockMvc.perform(get("/office/1")).andExpect(status().isOk())
+                .andExpect(content().json(office1));
+        String office2 = "{\"data\":{\"id\":\"2\",\"name\":\"OCS Саратов\"," +
+                "\"address\":\"410004, Саратов, Ул. Чернышевского, 60/62, офис 903\"," +
+                "\"phone\":\"8-800-555-3-999\",\"isActive\":true}}";
+        mockMvc.perform(get("/office/2")).andExpect(status().isOk())
+                .andExpect(content().json(office2));
+        mockMvc.perform(get("/office/3")).andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.error").value("Could not find office 3"));
     }
 }
