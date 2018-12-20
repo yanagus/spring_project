@@ -47,6 +47,10 @@ public class Position implements Serializable{
         return id;
     }
 
+    public void setId(Short id) {
+        this.id = id;
+    }
+
     public Integer getVersion() {
         return version;
     }
@@ -69,13 +73,12 @@ public class Position implements Serializable{
         if (o == null || getClass() != o.getClass()) return false;
         Position position = (Position) o;
         return Objects.equals(id, position.id) &&
-                Objects.equals(version, position.version) &&
                 Objects.equals(name, position.name);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, version, name);
+        return Objects.hash(id, name);
     }
 }

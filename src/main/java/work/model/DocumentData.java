@@ -73,6 +73,10 @@ public class DocumentData implements Serializable {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Document getDocument() {
         return document;
     }
@@ -122,5 +126,4 @@ public class DocumentData implements Serializable {
 
         return Objects.hash(id, document, number, date, employee);
     }
-
 }

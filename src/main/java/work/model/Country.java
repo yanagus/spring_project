@@ -54,6 +54,10 @@ public class Country implements Serializable {
         return id;
     }
 
+    public void setId(Short id) {
+        this.id = id;
+    }
+
     public String getCode() {
         return code;
     }
