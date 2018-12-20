@@ -32,8 +32,8 @@ public class EmployeeServiceImpl  implements IService<EmployeeView, Integer> {
     @Override
     @Transactional
     public void add(EmployeeView view) {
-        Employee employee = new Employee(view.firstName, view.secondName, view.middleName, view.lastName, view.phone,
-                view.isIdentified, null, null, null);
+        Employee employee = new Employee(view.getFirstName(), view.getSecondName(), view.getMiddleName(), view.getLastName(), view.getPhone(),
+                view.getIsIdentified(), null, null, null);
         dao.save(employee);
     }
 

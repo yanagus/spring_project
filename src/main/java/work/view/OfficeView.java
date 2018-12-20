@@ -1,26 +1,29 @@
 package work.view;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 public class OfficeView {
 
-    public String id;
+    private String id;
 
     @Size(max = 50)
     @NotEmpty(message = "name cannot be null")
-    public String name;
+    private String name;
 
     @Size(max = 25)
-    public String phone;
+    private String phone;
 
     @Size(max = 100)
     @NotEmpty(message = "address cannot be null")
-    public String address;
+    private String address;
 
-    public Boolean isActive;
+    private Boolean isActive;
 
-    public OrganizationView organization;
+    @JsonIgnore
+    private OrganizationView organization;
 
     public OfficeView() {
     }
@@ -33,6 +36,54 @@ public class OfficeView {
         this.phone = phone;
         this.address = address;
         this.isActive = isActive;
+        this.organization = organization;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean active) {
+        isActive = active;
+    }
+
+    public OrganizationView getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(OrganizationView organization) {
         this.organization = organization;
     }
 

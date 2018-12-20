@@ -9,22 +9,46 @@ import javax.validation.constraints.Size;
 public class CountryView {
 
     @JsonIgnore
-    public String id;
+    private String id;
 
     @Size(max = 3)
     @NotEmpty(message = "code cannot be null")
     @JsonProperty("citizenshipCode")
-    public String code;
+    private String code;
 
     @Size(max = 50)
     @JsonProperty("citizenshipName")
-    public String name;
+    private String name;
 
     public CountryView() {
     }
 
     public CountryView(@Size(max = 3) @NotEmpty(message = "code cannot be null") String code, @Size(max = 50) String name) {
         this.code = code;
+        this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 }

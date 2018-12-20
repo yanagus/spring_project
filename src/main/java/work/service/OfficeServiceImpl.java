@@ -32,7 +32,7 @@ public class OfficeServiceImpl implements IService<OfficeView, Integer> {
     @Override
     @Transactional
     public void add(OfficeView view) {
-        Office office = new Office(view.name, view.phone, view.address, view.isActive, null);
+        Office office = new Office(view.getName(), view.getPhone(), view.getAddress(), view.getIsActive(), null);
         dao.save(office);
     }
 

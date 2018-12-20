@@ -5,32 +5,32 @@ import javax.validation.constraints.Size;
 
 public class OrganizationView {
 
-    public String id;
+    private String id;
 
     @Size(max = 50)
     @NotEmpty(message = "name cannot be null")
-    public String name;
+    private String name;
 
     @Size(max = 80)
     @NotEmpty(message = "full name cannot be null")
-    public String fullName;
+    private String fullName;
 
     @Size(max = 12)
     @NotEmpty(message = "inn cannot be null")
-    public String inn;
+    private String inn;
 
     @Size(max = 9)
     @NotEmpty(message = "kpp cannot be null")
-    public String kpp;
+    private String kpp;
 
     @Size(max = 25)
-    public String phone;
+    private String phone;
 
     @Size(max = 100)
     @NotEmpty(message = "address cannot be null")
-    public String address;
+    private String address;
 
-    public Boolean isActive;
+    private Boolean isActive;
 
     public OrganizationView() {
     }
@@ -49,6 +49,70 @@ public class OrganizationView {
         this.phone = phone;
         this.address = address;
         this.isActive = isActive;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getInn() {
+        return inn;
+    }
+
+    public void setInn(String inn) {
+        this.inn = inn;
+    }
+
+    public String getKpp() {
+        return kpp;
+    }
+
+    public void setKpp(String kpp) {
+        this.kpp = kpp;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean active) {
+        isActive = active;
     }
 
     @Override
