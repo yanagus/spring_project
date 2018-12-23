@@ -17,7 +17,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "/user", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/user", produces = APPLICATION_JSON_VALUE)
 public class EmployeeController {
 
     private final IService<EmployeeView, Integer> employeeService;
@@ -40,19 +40,19 @@ public class EmployeeController {
 
     /**
      * Найти работника по уникальному идентификатору id
-     * @param orgIdentifier id
+     * @param employeeIdentifier id работника
      * @return EmployeeView
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @JsonView(Views.GetByIdView.class)
-    public EmployeeView employeeById(@PathVariable("id") String orgIdentifier) {
-        if (!orgIdentifier.matches("[\\d]+")) {
-            throw new EntityNotFoundException("Could not find employee " + orgIdentifier);
+    public EmployeeView employeeById(@PathVariable("id") String employeeIdentifier) {
+        if (!employeeIdentifier.matches("[\\d]+")) {
+            throw new EntityNotFoundException("работник с id " + employeeIdentifier + " не найден");
         }
-        int id = Integer.parseInt(orgIdentifier);
+        int id = Integer.parseInt(employeeIdentifier);
         EmployeeView employeeView = employeeService.findById(id);
         if(employeeView == null) {
-            throw new EntityNotFoundException("Could not find employee " + id);
+            throw new EntityNotFoundException("работник с id " + id + " не найден");
         }
         return employeeView;
     }

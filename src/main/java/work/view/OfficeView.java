@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @JsonPropertyOrder({"id", "name", "address", "phone", "isActive"})
 public class OfficeView {
@@ -91,6 +92,25 @@ public class OfficeView {
 
     public void setOrganization(OrganizationView organization) {
         this.organization = organization;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OfficeView that = (OfficeView) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(phone, that.phone) &&
+                Objects.equals(address, that.address) &&
+                Objects.equals(isActive, that.isActive) &&
+                Objects.equals(organization, that.organization);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, name, phone, address, isActive, organization);
     }
 
     @Override

@@ -31,9 +31,8 @@ public class OrganizationServiceImpl implements IService<OrganizationView, Integ
      */
     @Override
     @Transactional
-    public void add(OrganizationView view) {
-        Organization organization = new Organization(view.getName(), view.getFullName(), view.getInn(), view.getKpp(),
-                view.getPhone(), view.getAddress(), view.getIsActive());
+    public void add(OrganizationView organizationView) {
+        Organization organization = mapperFacade.map(organizationView, Organization.class);
         dao.save(organization);
     }
 

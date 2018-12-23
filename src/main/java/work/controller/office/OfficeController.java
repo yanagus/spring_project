@@ -17,7 +17,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "/office", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/office", produces = APPLICATION_JSON_VALUE)
 public class OfficeController {
 
     private final IService<OfficeView, Integer> officeService;
@@ -39,19 +39,19 @@ public class OfficeController {
 
     /**
      * Найти офис по уникальному идентификатору id
-     * @param orgIdentifier id
+     * @param officeIdentifier id офиса
      * @return OfficeView
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @JsonView(Views.GetByIdView.class)
-    public OfficeView officeById(@PathVariable("id") String orgIdentifier) {
-        if (!orgIdentifier.matches("[\\d]+")) {
-            throw new EntityNotFoundException("Could not find office " + orgIdentifier);
+    public OfficeView officeById(@PathVariable("id") String officeIdentifier) {
+        if (!officeIdentifier.matches("[\\d]+")) {
+            throw new EntityNotFoundException("офис с id " + officeIdentifier + " не найден");
         }
-        int id = Integer.parseInt(orgIdentifier);
+        int id = Integer.parseInt(officeIdentifier);
         OfficeView officeView = officeService.findById(id);
         if(officeView == null) {
-            throw new EntityNotFoundException("Could not find office " + id);
+            throw new EntityNotFoundException("офис с id " + id + " не найден");
         }
         return officeView;
     }

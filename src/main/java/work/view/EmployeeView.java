@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 @JsonPropertyOrder({"id", "firstName", "secondName", "middleName", "lastName", "position", "phone", "docName", "docNumber",
@@ -200,6 +201,30 @@ public class EmployeeView {
             docDate = documentDataSet.iterator().next().getDate();
         }
         return docDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EmployeeView that = (EmployeeView) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(secondName, that.secondName) &&
+                Objects.equals(middleName, that.middleName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(phone, that.phone) &&
+                Objects.equals(isIdentified, that.isIdentified) &&
+                Objects.equals(position, that.position) &&
+                Objects.equals(country, that.country) &&
+                Objects.equals(office, that.office) &&
+                Objects.equals(documentDataSet, that.documentDataSet);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, firstName, secondName, middleName, lastName, phone, isIdentified, position, country, office, documentDataSet);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.Objects;
 
 public class DocumentDataView {
 
@@ -22,6 +23,17 @@ public class DocumentDataView {
 
     @JsonBackReference
     private EmployeeView employee;
+
+    public DocumentDataView() {
+    }
+
+    public DocumentDataView(String id, DocumentView document, @Size(max = 30) @NotEmpty(message = "number cannot be null") String number, Date date, EmployeeView employee) {
+        this.id = id;
+        this.document = document;
+        this.number = number;
+        this.date = date;
+        this.employee = employee;
+    }
 
     public String getId() {
         return id;
@@ -61,5 +73,34 @@ public class DocumentDataView {
 
     public void setEmployee(EmployeeView employee) {
         this.employee = employee;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DocumentDataView that = (DocumentDataView) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(document, that.document) &&
+                Objects.equals(number, that.number) &&
+                Objects.equals(date, that.date) &&
+                Objects.equals(employee, that.employee);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, document, number, date, employee);
+    }
+
+    @Override
+    public String toString() {
+        return "DocumentDataView{" +
+                "id='" + id + '\'' +
+                ", document=" + document +
+                ", number='" + number + '\'' +
+                ", date=" + date +
+                ", employee=" + employee +
+                '}';
     }
 }

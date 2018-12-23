@@ -11,4 +11,9 @@ public class Views {
      */
     public static class GetByIdView{}
 
+    /**
+     * Класс, обеспечивающий валидность входящих данных при сохранении новой сущности
+     */
+    public static class SaveView{}
+
 }
