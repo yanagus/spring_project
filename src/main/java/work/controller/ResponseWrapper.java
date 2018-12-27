@@ -112,7 +112,7 @@ public class ResponseWrapper implements ResponseBodyAdvice<Object> {
 @JsonSerialize
 class Wrapper<T> {
 
-    @JsonView({Views.GetByIdView.class})
+    @JsonView({Views.GetByIdView.class, Views.SaveView.class, Views.ListView.class, Views.UpdateView.class, Views.FilteredList.class})
     private T data;
 
     public Wrapper() {
@@ -159,6 +159,7 @@ class Wrapper<T> {
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonSerialize
 class ErrorWrapper<T> {
+
     private T error;
 
     public ErrorWrapper() {

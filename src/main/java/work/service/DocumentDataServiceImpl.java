@@ -28,8 +28,15 @@ public class DocumentDataServiceImpl implements IService<DocumentDataView, Integ
     }
 
     @Override
-    public void add(@Valid DocumentDataView view) {
+    public void add(@Valid DocumentDataView documentDataView) {
+        DocumentData documentData = mapperFacade.map(documentDataView, DocumentData.class);
+        dao.save(documentData);
+    }
 
+    @Override
+    public void update(@Valid DocumentDataView documentDataView) {
+        DocumentData documentData = mapperFacade.map(documentDataView, DocumentData.class);
+        dao.update(documentData);
     }
 
     /**
@@ -52,4 +59,18 @@ public class DocumentDataServiceImpl implements IService<DocumentDataView, Integ
         return mapperFacade.map(documentData, DocumentDataView.class);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public DocumentDataView findByParameter(String parameter) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<DocumentDataView> findByParametersList(DocumentDataView view) {
+        return null;
+    }
 }

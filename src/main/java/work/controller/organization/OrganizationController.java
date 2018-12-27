@@ -1,16 +1,17 @@
 package work.controller.organization;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import work.controller.EntityAlreadyExistException;
 import work.controller.EntityNotFoundException;
 import work.service.IService;
 import work.view.OrganizationView;
 import work.view.ResponseView;
+import work.view.Views;
+import work.view.inputView.OrganizationViewRequest;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -34,20 +35,49 @@ public class OrganizationController {
      * @return экземпляр типа ResponseView с сообщением об успешном сохранении новой организации
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public ResponseView organization(@Valid @RequestBody OrganizationView organization) {
-        List<OrganizationView> currentOrganizations = organizations();
-        for (OrganizationView organizationView : currentOrganizations){
-            if (organization.getInn().equals(organizationView.getInn())){
-                throw new EntityAlreadyExistException("организация с таким ИНН уже существует в базе данных");
-            }
+    public @ResponseStatus(HttpStatus.CREATED) ResponseView organization(@Validated(Views.SaveView.class) @RequestBody OrganizationViewRequest organization) {
+        System.out.println(organization.toString());
+        OrganizationView organizationByInn = organizationService.findByParameter(organization.getInn());
+        if (organizationByInn != null) {
+            throw new EntityAlreadyExistException("организация с таким ИНН уже существует в базе данных");
         }
-        organizationService.add(organization);
+        OrganizationView organizationView = new OrganizationView(organization);
+        organizationService.add(organizationView);
         return new ResponseView("success");
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    /**
+     * Обновить данные организации
+     * @param organization обновлённые данные
+     * @return экземпляр типа ResponseView с сообщением об успешном обновлении текущей организации
+     */
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public ResponseView updateOrganization(@Validated(Views.UpdateView.class) @RequestBody OrganizationViewRequest organization) {
+        OrganizationView organizationView = organizationService.findById(Integer.parseInt(organization.getId()));
+        organizationView.setName(organization.getName());
+        organizationView.setFullName(organization.getFullName());
+        organizationView.setInn(organization.getInn());
+        organizationView.setKpp(organization.getKpp());
+        organizationView.setAddress(organization.getAddress());
+        if (organization.getPhone() != null) {
+            organizationView.setPhone(organization.getPhone());
+        }
+        if (organization.getIsActive() != null) {
+            organizationView.setPhone(organization.getPhone());
+        }
+        organizationService.update(organizationView);
+        return new ResponseView("success");
+    }
+
+    @RequestMapping(value = "/list/all", method = RequestMethod.GET)
     public List<OrganizationView> organizations() {
         return organizationService.findAll();
+    }
+
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    public List<OrganizationView> organizationsByFilter(@Validated(Views.FilteredList.class) @RequestBody OrganizationViewRequest organization) {
+        OrganizationView organizationView = new OrganizationView(organization);
+        return organizationService.findByParametersList(organizationView);
     }
 
     /**
@@ -55,6 +85,7 @@ public class OrganizationController {
      * @param organizationIdentifier id организации
      * @return экземпляр типа OrganizationView
      */
+    @JsonView(Views.GetByIdView.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public OrganizationView organizationById(@PathVariable("id") String organizationIdentifier) {
         if (!organizationIdentifier.matches("[\\d]+")) {

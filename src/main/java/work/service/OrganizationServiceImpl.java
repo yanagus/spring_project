@@ -40,6 +40,16 @@ public class OrganizationServiceImpl implements IService<OrganizationView, Integ
      * {@inheritDoc}
      */
     @Override
+    @Transactional
+    public void update(OrganizationView organizationView) {
+        Organization organization = mapperFacade.map(organizationView, Organization.class);
+        dao.update(organization);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Transactional(readOnly = true)
     public List<OrganizationView> findAll() {
         List<Organization> all = dao.all();
@@ -52,7 +62,28 @@ public class OrganizationServiceImpl implements IService<OrganizationView, Integ
     @Override
     @Transactional(readOnly = true)
     public OrganizationView findById(Integer id) {
-        Organization org = dao.loadById(id);
-        return mapperFacade.map(org, OrganizationView.class);
+        Organization organization = dao.loadById(id);
+        return mapperFacade.map(organization, OrganizationView.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public OrganizationView findByParameter(String parameter) {
+        Organization organization = dao.loadByParameter(parameter);
+        return mapperFacade.map(organization, OrganizationView.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrganizationView> findByParametersList(OrganizationView view) {
+        Organization organization = mapperFacade.map(view, Organization.class);
+        List<Organization> organizationList = dao.loadByParametersList(organization);
+        return mapperFacade.mapAsList(organizationList, OrganizationView.class);
     }
 }

@@ -1,9 +1,12 @@
 package work.view;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import java.util.Objects;
 
 public class ResponseView {
 
+    @JsonView({Views.SaveView.class, Views.UpdateView.class})
     private String result;
 
     public ResponseView() {

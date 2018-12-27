@@ -8,6 +8,7 @@ import work.model.Office;
 import work.model.mapper.MapperFacade;
 import work.view.OfficeView;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -31,9 +32,20 @@ public class OfficeServiceImpl implements IService<OfficeView, Integer> {
      */
     @Override
     @Transactional
-    public void add(OfficeView view) {
-        Office office = new Office(view.getName(), view.getPhone(), view.getAddress(), view.getIsActive(), null);
+    public void add(OfficeView officeView) {
+
+        Office office = mapperFacade.map(officeView, Office.class);
         dao.save(office);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void update(OfficeView officeView) {
+        Office office = mapperFacade.map(officeView, Office.class);
+        dao.update(office);
     }
 
     /**
@@ -54,5 +66,21 @@ public class OfficeServiceImpl implements IService<OfficeView, Integer> {
     public OfficeView findById(Integer id) {
         Office office = dao.loadById(id);
         return mapperFacade.map(office, OfficeView.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public OfficeView findByParameter(String parameter) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<OfficeView> findByParametersList(OfficeView view) {
+        return null;
     }
 }

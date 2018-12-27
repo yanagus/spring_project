@@ -75,7 +75,7 @@ public class TestOrganizationController {
         Wrapper<OrganizationView> wrapper = responseEntity.getBody();
         OrganizationView organizationView = new OrganizationView("2", "OCS", "OCS Distribution",
                 "1234567890","123456789", "+7 (495) 995-2575",
-                "108811, г. Москва, Киевское шоссе, Румянцево, офисный парк «Комсити» д.6 стр.1", false);
+                "108811, г. Москва, Киевское шоссе, Румянцево, офисный парк «Комсити» д.6 стр.1", false, null);
         Assert.assertEquals(organizationView, wrapper.getData());
         Assert.assertTrue(headers.getContentType().includes(MediaType.APPLICATION_JSON));
     }
@@ -98,13 +98,13 @@ public class TestOrganizationController {
     public void testPostNewOrganizationAndGet() {
         restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
         OrganizationView organizationView = new OrganizationView(null, "название", "полн.название", "1111111111", "000000000",
-                "8 800 000 00 00", "Москва", true);
+                "8 800 000 00 00", "Москва", true, null);
         HttpEntity<OrganizationView> entity = new HttpEntity<>(organizationView);
         ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/organization/save", HttpMethod.POST,
                 entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
         Wrapper<ResponseView> wrapper = responseEntity.getBody();
         Assert.assertEquals(new ResponseView("success"), wrapper.getData());
-        Assert.assertEquals(200, responseEntity.getStatusCodeValue());
+        Assert.assertEquals(201, responseEntity.getStatusCodeValue());
 
         ResponseEntity<Wrapper<OrganizationView>> responseEntityId3 = restTemplate.exchange("/api/organization/3", HttpMethod.GET,
                 entity, new ParameterizedTypeReference<Wrapper<OrganizationView>>() {});
@@ -116,7 +116,7 @@ public class TestOrganizationController {
     public void testPostNewNotValidOrganization() {
         restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
         OrganizationView organizationView = new OrganizationView(null, "", "полн.название",
-                "0123456789", "000000000","8 800 000 00 00", null, true);
+                "0123456789", "000000000","8 800 000 00 00", null, true, null);
         HttpEntity<OrganizationView> entity = new HttpEntity<>(organizationView);
         ResponseEntity<ErrorWrapper<ResponseMessage>> responseEntity = restTemplate.exchange("/api/organization/save",
                 HttpMethod.POST, entity, new ParameterizedTypeReference<ErrorWrapper<ResponseMessage>>() {});

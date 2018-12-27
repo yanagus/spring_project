@@ -31,10 +31,19 @@ public class EmployeeServiceImpl  implements IService<EmployeeView, Integer> {
      */
     @Override
     @Transactional
-    public void add(EmployeeView view) {
-        Employee employee = new Employee(view.getFirstName(), view.getSecondName(), view.getMiddleName(), view.getLastName(), view.getPhone(),
-                view.getIsIdentified(), null, null, null);
+    public void add(EmployeeView employeeView) {
+        Employee employee = mapperFacade.map(employeeView, Employee.class);
         dao.save(employee);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void update(EmployeeView employeeView) {
+        Employee employee = mapperFacade.map(employeeView, Employee.class);
+        dao.update(employee);
     }
 
     /**
@@ -55,5 +64,21 @@ public class EmployeeServiceImpl  implements IService<EmployeeView, Integer> {
     public EmployeeView findById(Integer id) {
         Employee employee = dao.loadById(id);
         return mapperFacade.map(employee, EmployeeView.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public EmployeeView findByParameter(String parameter) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<EmployeeView> findByParametersList(EmployeeView view) {
+        return null;
     }
 }

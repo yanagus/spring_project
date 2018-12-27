@@ -9,11 +9,26 @@ public class Views {
     /**
      * Класс, обеспечивающий видимость полей при запросе данных по id
      */
-    public static class GetByIdView{}
+    public interface GetByIdView{}
 
     /**
      * Класс, обеспечивающий валидность входящих данных при сохранении новой сущности
      */
-    public static class SaveView{}
+    public interface SaveView{}
+
+    /**
+     * Класс, обеспечивающий видимость полей при запросе списка данных
+     */
+    public interface ListView{}
+
+    /**
+     * Класс, обеспечивающий видимость полей при запросе списка фильтрованных данных
+     */
+    public interface FilteredList{}
+
+    /**
+     * Класс, обеспечивающий валидность входящих данных при обновлении сущности
+     */
+    public interface UpdateView{}
 
 }

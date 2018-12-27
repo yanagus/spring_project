@@ -1,22 +1,24 @@
 package work.view;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
+@JsonPropertyOrder({"name", "code"})
 public class CountryView {
 
     private String id;
 
     @Size(max = 3)
     @NotEmpty(message = "code cannot be null")
-    @JsonProperty("citizenshipCode")
+    @JsonView(Views.ListView.class)
     private String code;
 
     @Size(max = 50)
-    @JsonProperty("citizenshipName")
+    @JsonView(Views.ListView.class)
     private String name;
 
     public CountryView() {
@@ -61,11 +63,11 @@ public class CountryView {
                 Objects.equals(name, that.name);
     }
 
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id, code, name);
-    }
+//    @Override
+//    public int hashCode() {
+//
+//        return Objects.hash(id, code, name);
+//    }
 
     @Override
     public String toString() {

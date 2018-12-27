@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
 import javax.persistence.CascadeType;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -189,6 +190,13 @@ public class Employee implements Serializable {
             documentDataSet = new HashSet<>();
         }
         return documentDataSet;
+    }
+
+    public void setDocumentDataSet(Set<DocumentData> documentDataSet) {
+        if (documentDataSet == null) {
+            this.documentDataSet = Collections.emptySet();
+        }
+        this.documentDataSet = documentDataSet;
     }
 
     public void addDocumentData(DocumentData documentData) {

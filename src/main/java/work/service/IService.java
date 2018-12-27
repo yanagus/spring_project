@@ -21,6 +21,13 @@ public interface IService<V, ID extends Number> {
     void add(@Valid V view);
 
     /**
+     * Обновить view в БД
+     *
+     * @param view представление
+     */
+    void update(@Valid V view);
+
+    /**
      * Получить список view
      *
      * @return List<V>
@@ -35,4 +42,19 @@ public interface IService<V, ID extends Number> {
      */
     V findById(ID id);
 
+    /**
+     * Найти view по параметру
+     *
+     * @param parameter параметр
+     * @return представление
+     */
+    V findByParameter(String parameter);
+
+    /**
+     * Найти список view по параметрам
+     *
+     * @param view представление с заданными параметрами
+     * @return представление
+     */
+    List<V> findByParametersList(V view);
 }

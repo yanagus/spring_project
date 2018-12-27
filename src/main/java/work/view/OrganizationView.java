@@ -1,50 +1,93 @@
 package work.view;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
+import work.view.inputView.OrganizationViewRequest;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+/**
+ * Класс для сериализации в JSON
+ */
 @JsonPropertyOrder({"id", "name", "fullName", "inn", "kpp", "address", "phone", "isActive"})
 public class OrganizationView {
 
+    /**
+     * Уникальный идентификатор организации
+     */
+    //@NotEmpty(message = "введите id организации")
+    @JsonView(Views.GetByIdView.class)
     private String id;
 
-    @Size(max = 50, message = "длина названия не должна превышать 50 символов")
-    @NotEmpty(message = "введите название организации")
+    /**
+     * Название
+     */
+//    @Size(max = 50, message = "длина названия не должна превышать 50 символов")
+//    @NotEmpty(message = "введите название организации")
+    @JsonView(Views.GetByIdView.class)
     private String name;
 
-    @Size(max = 80, message = "длина полного названия не должна превышать 80 символов")
-    @NotEmpty(message = "введите полное название организации")
+    /**
+     * Полное название
+     */
+//    @Size(max = 80, message = "длина полного названия не должна превышать 80 символов")
+//    @NotEmpty(message = "введите полное название организации")
+    @JsonView(Views.GetByIdView.class)
     private String fullName;
 
-    @Size(min = 10, max = 12, message = "длина ИНН должна быть 10 или 12 цифр")
-    @NotEmpty(message = "введите ИНН организации")
+    /**
+     * ИНН
+     */
+//    @Size(min = 10, max = 12, message = "длина ИНН должна быть 10 или 12 цифр")
+//    @NotEmpty(message = "введите ИНН организации")
+    @JsonView(Views.GetByIdView.class)
     private String inn;
 
-    @Size(max = 9, message = "длина КПП должна быть 9 цифр")
-    @NotEmpty(message = "введите КПП организации")
+    /**
+     * КПП
+     */
+//    @Size(max = 9, message = "длина КПП должна быть 9 цифр")
+//    @NotEmpty(message = "введите КПП организации")
+    @JsonView(Views.GetByIdView.class)
     private String kpp;
 
-    @Size(max = 25, message = "длина телефона не должна превышать 25 символов")
+    /**
+     * Телефон
+     */
+//    @Size(max = 25, message = "длина телефона не должна превышать 25 символов")
+    @JsonView(Views.GetByIdView.class)
     private String phone;
 
-    @Size(max = 100, message = "длина адреса не должна превышать 100 символов")
-    @NotEmpty(message = "введите адрес организации")
+    /**
+     * Адрес
+     */
+//    @Size(max = 100, message = "длина адреса не должна превышать 100 символов")
+//    @NotEmpty(message = "введите адрес организации")
+    @JsonView(Views.GetByIdView.class)
     private String address;
 
+    /**
+     * Статус
+     */
+    @JsonView(Views.GetByIdView.class)
     private Boolean isActive = false;
+
+    /**
+     * Множество офисов, относящихся к данной организиции
+     */
+    @JsonBackReference
+    private Set<OfficeView> offices;
 
     public OrganizationView() {
     }
 
-    public OrganizationView(String id, @Size(max = 50) @NotEmpty(message = "name cannot be null") String name,
-                            @Size(max = 80) @NotEmpty(message = "full name cannot be null") String fullName,
-                            @Size(max = 12) @NotEmpty(message = "inn cannot be null") String inn,
-                            @Size(max = 9) @NotEmpty(message = "kpp cannot be null") String kpp,
-                            @Size(max = 25) String phone, @Size(max = 100) @NotEmpty(message = "address cannot be null") String address,
-                            Boolean isActive) {
+    public OrganizationView(String id, String name, String fullName, String inn, String kpp, String address, String phone, Boolean isActive, Set<OfficeView> offices) {
         this.id = id;
         this.name = name;
         this.fullName = fullName;
@@ -52,7 +95,17 @@ public class OrganizationView {
         this.kpp = kpp;
         this.phone = phone;
         this.address = address;
-        this.isActive = isActive;
+        setIsActive(isActive);
+        setOffices(offices);
+    }
+
+    /**
+     * Конструктор для преобразования из класса для десериализации
+     * @param orgRequest
+     */
+    public OrganizationView(OrganizationViewRequest orgRequest) {
+        this(orgRequest.getId(), orgRequest.getName(), orgRequest.getFullName(), orgRequest.getInn().trim(), orgRequest.getKpp(),
+                orgRequest.getAddress(), orgRequest.getPhone(), orgRequest.getIsActive(), Collections.emptySet());
     }
 
     public String getId() {
@@ -115,9 +168,36 @@ public class OrganizationView {
         return isActive;
     }
 
-    public void setIsActive(Boolean active) {
-        isActive = active;
+    public void setIsActive(Boolean isActive) {
+        if (isActive == null) {
+            this.isActive = false;
+        }
+        this.isActive = isActive;
     }
+
+    public void setOffices(Set<OfficeView> offices) {
+        if (offices == null) {
+            this.offices = Collections.emptySet();
+        }
+        this.offices = offices;
+    }
+
+    public Set<OfficeView> getOffices() {
+        if (offices == null) {
+            offices = new HashSet<>();
+        }
+        return offices;
+    }
+
+//    public void addOffice(OfficeView officeView) {
+//        getOffices().add(officeView);
+//        officeView.setOrganization(this);
+//    }
+//
+//    public void removeOffice(OfficeView officeView) {
+//        getOffices().remove(officeView);
+//        officeView.setOrganization(null);
+//    }
 
     @Override
     public boolean equals(Object o) {

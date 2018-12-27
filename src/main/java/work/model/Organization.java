@@ -1,13 +1,9 @@
 package work.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Column;
-import javax.persistence.Version;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,11 +15,11 @@ public class Organization implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", unique = true)
     private Integer id;
 
     /**
-     * Служебное поле hibernate
+     * Служебное поле Hibernate
      */
     @Version
     private Integer version;
@@ -70,11 +66,17 @@ public class Organization implements Serializable {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "organization")
+    /**
+     * Множество офисов, относящихся к данной организиции
+     */
+    @OneToMany(mappedBy = "organization", cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     private Set<Office> offices;
 
     /**
-     * Конструктор для hibernate
+     * Конструктор для Hibernate
      */
     public Organization() {
 
@@ -155,7 +157,17 @@ public class Organization implements Serializable {
     }
 
     public Set<Office> getOffices() {
+        if (offices == null) {
+            offices = new HashSet<>();
+        }
         return offices;
+    }
+
+    public void setOffices(Set<Office> offices) {
+        if (offices == null) {
+            this.offices = Collections.emptySet();
+        }
+        this.offices = offices;
     }
 
     public void addOffice(Office office) {

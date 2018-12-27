@@ -1,15 +1,10 @@
 package work.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Column;
-import javax.persistence.Version;
-import javax.persistence.OneToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
-import javax.persistence.FetchType;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Fetch;
+
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
@@ -46,7 +41,7 @@ public class Office implements Serializable {
     /**
      * Адрес
      */
-    @Column(name = "address", length = 100, nullable = false)
+    @Column(name = "address", length = 100)
     private String address;
 
     /**
@@ -123,6 +118,7 @@ public class Office implements Serializable {
 
     public void setOrganization(Organization organization) {
         this.organization = organization;
+
     }
 
     public Set<Employee> getEmployees() {

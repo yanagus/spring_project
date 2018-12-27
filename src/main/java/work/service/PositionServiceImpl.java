@@ -28,8 +28,15 @@ public class PositionServiceImpl implements IService<PositionView, Short> {
     }
 
     @Override
-    public void add(@Valid PositionView view) {
+    public void add(@Valid PositionView positionView) {
+        Position position = mapperFacade.map(positionView, Position.class);
+        dao.save(position);
+    }
 
+    @Override
+    public void update(@Valid PositionView positionView) {
+        Position position = mapperFacade.map(positionView, Position.class);
+        dao.update(position);
     }
 
     /**
@@ -50,5 +57,23 @@ public class PositionServiceImpl implements IService<PositionView, Short> {
     public PositionView findById(Short id) {
         Position position = dao.loadById(id);
         return mapperFacade.map(position, PositionView.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public PositionView findByParameter(String parameter) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<PositionView> findByParametersList(PositionView view) {
+        return null;
     }
 }

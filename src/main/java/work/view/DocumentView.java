@@ -1,22 +1,24 @@
 package work.view;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
+@JsonPropertyOrder({"name", "code"})
 public class DocumentView {
 
     private String id;
 
     @Size(max = 2)
     @NotEmpty(message = "code cannot be null")
-    @JsonProperty("docCode")
+    @JsonView(Views.ListView.class)
     private String code;
 
     @Size(max = 50)
-    @JsonProperty("docName")
+    @JsonView(Views.ListView.class)
     private String name;
 
     public String getId() {

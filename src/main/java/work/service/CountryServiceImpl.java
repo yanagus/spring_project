@@ -28,8 +28,15 @@ public class CountryServiceImpl implements IService<CountryView, Short> {
     }
 
     @Override
-    public void add(@Valid CountryView view) {
+    public void add(@Valid CountryView countryView) {
+        Country country = mapperFacade.map(countryView, Country.class);
+        dao.save(country);
+    }
 
+    @Override
+    public void update(@Valid CountryView countryView) {
+        Country country = mapperFacade.map(countryView, Country.class);
+        dao.update(country);
     }
 
     /**
@@ -50,5 +57,23 @@ public class CountryServiceImpl implements IService<CountryView, Short> {
     public CountryView findById(Short id) {
         Country country = dao.loadById(id);
         return mapperFacade.map(country, CountryView.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public CountryView findByParameter(String parameter) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<CountryView> findByParametersList(CountryView view) {
+        return null;
     }
 }

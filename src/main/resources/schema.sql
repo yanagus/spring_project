@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Office (
     version     INTEGER NOT NULL,
     name        VARCHAR(50) NOT NULL,
     phone       VARCHAR(25),
-    address     VARCHAR(100) NOT NULL,
+    address     VARCHAR(100),
     is_active   BOOLEAN DEFAULT FALSE,
     org_id      INTEGER REFERENCES Organization (id) ON DELETE SET NULL ON UPDATE CASCADE
 );

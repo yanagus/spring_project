@@ -2,6 +2,7 @@ package work.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.List;
 
@@ -39,6 +40,11 @@ public abstract class AbstractDao<T extends Serializable, ID extends Number> imp
     /**
      * {@inheritDoc}
      */
+    abstract public T loadByParameter(String param);
+
+    /**
+     * {@inheritDoc}
+     */
     public void update(T entity) {
         entityManager.persist(entity);
     }
@@ -46,8 +52,14 @@ public abstract class AbstractDao<T extends Serializable, ID extends Number> imp
     /**
      * {@inheritDoc}
      */
-    public void save(T entity) {
+    public void save(@Valid T entity) {
         entityManager.persist(entity);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public List<T> loadByParametersList(T entity) {
+        return null;
+    }
 }

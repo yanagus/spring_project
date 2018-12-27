@@ -28,8 +28,15 @@ public class DocumentServiceImpl implements IService<DocumentView, Byte> {
     }
 
     @Override
-    public void add(@Valid DocumentView view) {
+    public void add(@Valid DocumentView documentView) {
+        Document document = mapperFacade.map(documentView, Document.class);
+        dao.save(document);
+    }
 
+    @Override
+    public void update(@Valid DocumentView documentView) {
+        Document document = mapperFacade.map(documentView, Document.class);
+        dao.update(document);
     }
 
     /**
@@ -50,5 +57,23 @@ public class DocumentServiceImpl implements IService<DocumentView, Byte> {
     public DocumentView findById(Byte id) {
         Document document = dao.loadById(id);
         return mapperFacade.map(document, DocumentView.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public DocumentView findByParameter(String parameter) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<DocumentView> findByParametersList(DocumentView view) {
+        return null;
     }
 }

@@ -1,12 +1,18 @@
 package work.view;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Objects;
 
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class DocumentDataView {
 
     private String id;
@@ -27,7 +33,7 @@ public class DocumentDataView {
     public DocumentDataView() {
     }
 
-    public DocumentDataView(String id, DocumentView document, @Size(max = 30) @NotEmpty(message = "number cannot be null") String number, Date date, EmployeeView employee) {
+    public DocumentDataView(String id, DocumentView document, String number, Date date, EmployeeView employee) {
         this.id = id;
         this.document = document;
         this.number = number;

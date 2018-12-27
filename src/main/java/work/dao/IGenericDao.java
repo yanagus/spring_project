@@ -18,7 +18,7 @@ public interface IGenericDao<T extends Serializable, ID extends Number> {
     /**
      * Получить список Entity
      *
-     * @return List
+     * @return List<T> список сущностей
      */
     List<T> all();
 
@@ -26,9 +26,25 @@ public interface IGenericDao<T extends Serializable, ID extends Number> {
      * Получить Entity по идентификатору
      *
      * @param id уникальный идентификатор
-     * @return T
+     * @return T сущность
      */
     T loadById(ID id);
+
+    /**
+     * Получить Entity по параметру
+     *
+     * @param param параметр
+     * @return T
+     */
+    T loadByParameter(String param);
+
+    /**
+     * Получить список Entity
+     *
+     * @param entity сущность
+     * @return List<T> список сущностей
+     */
+    List<T> loadByParametersList(T entity);
 
     /**
      * Обновить Entity
