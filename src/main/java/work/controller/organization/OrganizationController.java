@@ -13,7 +13,6 @@ import work.view.ResponseView;
 import work.view.Views;
 import work.view.inputView.OrganizationViewRequest;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -36,8 +35,7 @@ public class OrganizationController {
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public @ResponseStatus(HttpStatus.CREATED) ResponseView organization(@Validated(Views.SaveView.class) @RequestBody OrganizationViewRequest organization) {
-        System.out.println(organization.toString());
-        OrganizationView organizationByInn = organizationService.findByParameter(organization.getInn());
+        OrganizationView organizationByInn = organizationService.findByParameter(organization.getInn().trim());
         if (organizationByInn != null) {
             throw new EntityAlreadyExistException("организация с таким ИНН уже существует в базе данных");
         }
@@ -69,12 +67,19 @@ public class OrganizationController {
         return new ResponseView("success");
     }
 
+    // для тестирования - получить все организации
     @RequestMapping(value = "/list/all", method = RequestMethod.GET)
     public List<OrganizationView> organizations() {
         return organizationService.findAll();
     }
 
+    /**
+     * Получить список организаций по фильтру
+     * @param organization фильтр
+     * @return список организаций
+     */
     @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @JsonView(Views.FilteredList.class)
     public List<OrganizationView> organizationsByFilter(@Validated(Views.FilteredList.class) @RequestBody OrganizationViewRequest organization) {
         OrganizationView organizationView = new OrganizationView(organization);
         return organizationService.findByParametersList(organizationView);

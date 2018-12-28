@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,14 +35,13 @@ public class OrganizationDaoImpl extends AbstractDao<Organization, Integer> {
      */
     @Override
     public List<Organization> loadByParametersList(Organization entity) {
-        List<Organization> organizationList = new ArrayList<>();
-        if(entity.getInn() != null) {
-            organizationList.add(loadByParameter(entity.getInn()));
+        CriteriaQuery<Organization> criteria = buildCriteriaByNameAndActive(entity);
+        TypedQuery<Organization> query = entityManager.createQuery(criteria);
+        try {
+            return query.getResultList();
+        } catch (RuntimeException ex) {
+            return Collections.emptyList();
         }
-        if(organizationList.isEmpty()) {
-            organizationList = Collections.emptyList();
-        }
-        return organizationList;
     }
 
     /**
@@ -49,7 +49,7 @@ public class OrganizationDaoImpl extends AbstractDao<Organization, Integer> {
      */
     @Override
     public Organization loadByParameter(String parameter) {
-        CriteriaQuery<Organization> criteria = buildCriteria(parameter.trim());
+        CriteriaQuery<Organization> criteria = buildCriteria(parameter);
         TypedQuery<Organization> query = entityManager.createQuery(criteria);
         try {
             return query.getSingleResult();
@@ -62,9 +62,25 @@ public class OrganizationDaoImpl extends AbstractDao<Organization, Integer> {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Organization> criteria = builder.createQuery(Organization.class);
 
-        Root<Organization> person = criteria.from(Organization.class);
-        criteria.where(builder.equal(person.get("inn"), inn));
+        Root<Organization> organization = criteria.from(Organization.class);
+        criteria.where(builder.equal(organization.get("inn"), inn));
 
+        return criteria;
+    }
+
+    private CriteriaQuery<Organization> buildCriteriaByNameAndActive(Organization entity) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Organization> criteria = builder.createQuery(Organization.class);
+        Root<Organization> organization = criteria.from(Organization.class);
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(builder.equal(organization.get("name"), entity.getName()));
+        if (entity.getInn() != null) {
+            predicates.add(builder.equal(organization.get("inn"), entity.getInn()));
+        }
+        if (entity.getIsActive() != null) {
+            predicates.add(builder.equal(organization.get("isActive"), entity.getIsActive()));
+        }
+        criteria.select(organization).where(predicates.toArray(new Predicate[]{}));
         return criteria;
     }
 }
