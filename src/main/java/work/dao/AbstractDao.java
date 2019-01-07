@@ -45,9 +45,7 @@ public abstract class AbstractDao<T extends Serializable, ID extends Number> imp
     /**
      * {@inheritDoc}
      */
-    public void update(T entity) {
-        entityManager.persist(entity);
-    }
+    abstract public void update(T entity);
 
     /**
      * {@inheritDoc}

@@ -70,8 +70,10 @@ public class EmployeeServiceImpl  implements IService<EmployeeView, Integer> {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public EmployeeView findByParameter(String parameter) {
-        return null;
+        Employee employee = dao.loadByParameter(parameter);
+        return mapperFacade.map(employee, EmployeeView.class);
     }
 
     /**
@@ -79,6 +81,8 @@ public class EmployeeServiceImpl  implements IService<EmployeeView, Integer> {
      */
     @Override
     public List<EmployeeView> findByParametersList(EmployeeView view) {
-        return null;
+        Employee employee = mapperFacade.map(view, Employee.class);
+        List<Employee> organizationList = dao.loadByParametersList(employee);
+        return mapperFacade.mapAsList(organizationList, EmployeeView.class);
     }
 }

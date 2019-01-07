@@ -4,8 +4,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.Objects;
 
+/**
+ * Класс для сериализации ответа об успешном сохранении или изменении данных
+ */
 public class ResponseView {
 
+    /**
+     * Сообщение результата
+     */
     @JsonView({Views.SaveView.class, Views.UpdateView.class})
     private String result;
 

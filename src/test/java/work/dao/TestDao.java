@@ -52,7 +52,7 @@ public class TestDao {
     @Test
     public void testLoadById() {
         Organization organization = new Organization("Орг", "Организация", "0123456789",
-                "123456789", "+7(845)222-22-22", "г. Саратов", false);
+                "123456789", "+7(845)222-22-22", "г. Саратов", null);
         organization.setId(1);
         organizationDao.setClazz(Organization.class);
         Organization organization2 = organizationDao.loadById(1);
@@ -63,7 +63,6 @@ public class TestDao {
         office.setId(1);
         officeDao.setClazz(Office.class);
         Office office2 = officeDao.loadById(1);
-        Assert.assertEquals(office, office2);
 
         Position position = new Position("менеджер");
         position.setId((short) 1);
@@ -84,10 +83,11 @@ public class TestDao {
         Assert.assertEquals(document, document2);
 
         Employee employee = new Employee("Иван", null, null, "Иванов", "+7(927)111-11-11",
-                false, position, country, office);
+                null, position, country, office, null);
         employee.setId(1);
         employeeDao.setClazz(Employee.class);
         Employee employee2 = employeeDao.loadById(1);
         Assert.assertEquals(employee, employee2);
+        Assert.assertEquals(office, office2);
     }
 }

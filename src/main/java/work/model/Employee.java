@@ -6,16 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
 import javax.persistence.Version;
-import javax.persistence.OneToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
 import javax.persistence.CascadeType;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Работник
@@ -23,13 +20,16 @@ import java.util.Set;
 @Entity
 public class Employee implements Serializable {
 
+    /**
+     * Уникальный идентификатор
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
     /**
-     * Служебное поле hibernate
+     * Служебное поле Hibernate
      */
     @Version
     private Integer version;
@@ -70,30 +70,56 @@ public class Employee implements Serializable {
     @Column(name = "is_identified")
     private Boolean isIdentified;
 
+    /**
+     * Должность
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pos_id")
     private Position position;
 
+    /**
+     * Гражданство
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id")
     private Country country;
 
+    /**
+     * Должность
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_id")
     private Office office;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<DocumentData> documentDataSet;
+    /**
+     * Данные документа
+     */
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private DocumentData documentData;
 
     /**
-     * Конструктор для hibernate
+     * Конструктор для Hibernate
      */
     public Employee() {
 
     }
 
+    /**
+     * Конструктор
+     *
+     * @param firstName имя
+     * @param secondName второе имя
+     * @param middleName среднее имя
+     * @param lastName фамилия
+     * @param phone телефон
+     * @param isIdentified статус
+     * @param position должность
+     * @param country гражданство
+     * @param office офис
+     * @param documentData данные документа
+     */
     public Employee(String firstName, String secondName, String middleName, String lastName, String phone,
-                    Boolean isIdentified, Position position, Country country, Office office) {
+                    Boolean isIdentified, Position position, Country country, Office office, DocumentData documentData) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.middleName = middleName;
@@ -103,6 +129,7 @@ public class Employee implements Serializable {
         this.position = position;
         this.country = country;
         this.office = office;
+        this.documentData = documentData;
     }
 
     public Integer getId() {
@@ -161,6 +188,12 @@ public class Employee implements Serializable {
         isIdentified = identified;
     }
 
+    public void setIsIdentified(String identified) {
+        if (identified != null) {
+            isIdentified = Boolean.parseBoolean(identified);
+        }
+    }
+
     public Position getPosition() {
         return position;
     }
@@ -185,28 +218,12 @@ public class Employee implements Serializable {
         this.office = office;
     }
 
-    public Set<DocumentData> getDocumentDataSet() {
-        if (documentDataSet == null) {
-            documentDataSet = new HashSet<>();
-        }
-        return documentDataSet;
+    public DocumentData getDocumentData() {
+        return documentData;
     }
 
-    public void setDocumentDataSet(Set<DocumentData> documentDataSet) {
-        if (documentDataSet == null) {
-            this.documentDataSet = Collections.emptySet();
-        }
-        this.documentDataSet = documentDataSet;
-    }
-
-    public void addDocumentData(DocumentData documentData) {
-        getDocumentDataSet().add(documentData);
-        documentData.setEmployee(this);
-    }
-
-    public void removeDocumentData(DocumentData documentData) {
-        getDocumentDataSet().remove(documentData);
-        documentData.setEmployee(null);
+    public void setDocumentData(DocumentData documentData) {
+        this.documentData = documentData;
     }
 
     @Override
@@ -223,7 +240,8 @@ public class Employee implements Serializable {
                 Objects.equals(isIdentified, employee.isIdentified) &&
                 Objects.equals(position, employee.position) &&
                 Objects.equals(country, employee.country) &&
-                Objects.equals(office, employee.office);
+                Objects.equals(office, employee.office) &&
+                Objects.equals(documentData, employee.documentData);
     }
 
     @Override
@@ -232,4 +250,19 @@ public class Employee implements Serializable {
         return Objects.hash(id, firstName, secondName, middleName, lastName, phone, isIdentified, position, country, office);
     }
 
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", secondName='" + secondName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", isIdentified=" + isIdentified +
+                ", position=" + position +
+                ", country=" + country +
+                ", office=" + office +
+                '}';
+    }
 }

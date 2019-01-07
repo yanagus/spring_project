@@ -4,10 +4,19 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
+/**
+ * Класс должности для сериализации в JSON
+ */
 public class PositionView {
 
+    /**
+     * Уникальный идентификатор должности
+     */
     private String id;
 
+    /**
+     * Название должности
+     */
     @Size(max = 50)
     @NotEmpty(message = "name cannot be null")
     private String name;
@@ -16,8 +25,8 @@ public class PositionView {
 
     }
 
-    public PositionView(@Size(max = 50) @NotEmpty(message = "name cannot be null") String name) {
-        this.name = name;
+    public PositionView(String name) {
+        setName(name);
     }
 
     public String getId() {
@@ -33,7 +42,9 @@ public class PositionView {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name != null) {
+            this.name = name.trim();
+        }
     }
 
     @Override

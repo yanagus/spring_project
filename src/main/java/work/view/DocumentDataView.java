@@ -1,40 +1,52 @@
 package work.view;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Objects;
 
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "id")
+/**
+ * Класс персональных данных работника для сериализации в JSON
+ */
 public class DocumentDataView {
 
+    /**
+     * Уникальный идентификатор офиса
+     */
     private String id;
 
+    /**
+     * Документ
+     */
     private DocumentView document;
 
+    /**
+     * Номер документа
+     */
     @Size(max = 30)
     @NotEmpty(message = "number cannot be null")
     @JsonProperty("docNumber")
     private String number;
 
+    /**
+     * Дата документа
+     */
     @JsonProperty("docDate")
     private Date date;
 
+    /**
+     * Работник
+     */
     @JsonBackReference
     private EmployeeView employee;
 
     public DocumentDataView() {
     }
 
-    public DocumentDataView(String id, DocumentView document, String number, Date date, EmployeeView employee) {
-        this.id = id;
+    public DocumentDataView(DocumentView document, String number, Date date, EmployeeView employee) {
         this.document = document;
         this.number = number;
         this.date = date;

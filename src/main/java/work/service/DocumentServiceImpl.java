@@ -27,12 +27,18 @@ public class DocumentServiceImpl implements IService<DocumentView, Byte> {
         this.mapperFacade = mapperFacade;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void add(@Valid DocumentView documentView) {
         Document document = mapperFacade.map(documentView, Document.class);
         dao.save(document);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(@Valid DocumentView documentView) {
         Document document = mapperFacade.map(documentView, Document.class);

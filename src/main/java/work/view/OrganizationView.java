@@ -5,15 +5,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonView;
 import work.view.inputView.OrganizationViewRequest;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 /**
- * Класс для сериализации в JSON
+ * Класс организации для сериализации в JSON
  */
 @JsonPropertyOrder({"id", "name", "fullName", "inn", "kpp", "address", "phone", "isActive"})
 public class OrganizationView {
@@ -21,62 +19,50 @@ public class OrganizationView {
     /**
      * Уникальный идентификатор организации
      */
-    //@NotEmpty(message = "введите id организации")
-    @JsonView(Views.GetByIdView.class)
+    @JsonView({Views.GetByIdView.class, Views.FilteredList.class})
     private String id;
 
     /**
      * Название
      */
-//    @Size(max = 50, message = "длина названия не должна превышать 50 символов")
-//    @NotEmpty(message = "введите название организации")
-    @JsonView(Views.GetByIdView.class)
+    @JsonView({Views.GetByIdView.class, Views.FilteredList.class})
     private String name;
 
     /**
      * Полное название
      */
-//    @Size(max = 80, message = "длина полного названия не должна превышать 80 символов")
-//    @NotEmpty(message = "введите полное название организации")
     @JsonView(Views.GetByIdView.class)
     private String fullName;
 
     /**
      * ИНН
      */
-//    @Size(min = 10, max = 12, message = "длина ИНН должна быть 10 или 12 цифр")
-//    @NotEmpty(message = "введите ИНН организации")
     @JsonView(Views.GetByIdView.class)
     private String inn;
 
     /**
      * КПП
      */
-//    @Size(max = 9, message = "длина КПП должна быть 9 цифр")
-//    @NotEmpty(message = "введите КПП организации")
     @JsonView(Views.GetByIdView.class)
     private String kpp;
 
     /**
      * Телефон
      */
-//    @Size(max = 25, message = "длина телефона не должна превышать 25 символов")
     @JsonView(Views.GetByIdView.class)
     private String phone;
 
     /**
      * Адрес
      */
-//    @Size(max = 100, message = "длина адреса не должна превышать 100 символов")
-//    @NotEmpty(message = "введите адрес организации")
     @JsonView(Views.GetByIdView.class)
     private String address;
 
     /**
      * Статус
      */
-    @JsonView(Views.GetByIdView.class)
-    private Boolean isActive = false;
+    @JsonView({Views.GetByIdView.class, Views.FilteredList.class})
+    private String isActive;
 
     /**
      * Множество офисов, относящихся к данной организиции
@@ -87,11 +73,11 @@ public class OrganizationView {
     public OrganizationView() {
     }
 
-    public OrganizationView(String id, String name, String fullName, String inn, String kpp, String address, String phone, Boolean isActive, Set<OfficeView> offices) {
+    public OrganizationView(String id, String name, String fullName, String inn, String kpp, String address, String phone, String isActive, Set<OfficeView> offices) {
         this.id = id;
         this.name = name;
         this.fullName = fullName;
-        this.inn = inn;
+        this.setInn(inn);
         this.kpp = kpp;
         this.phone = phone;
         this.address = address;
@@ -104,7 +90,7 @@ public class OrganizationView {
      * @param orgRequest
      */
     public OrganizationView(OrganizationViewRequest orgRequest) {
-        this(orgRequest.getId(), orgRequest.getName(), orgRequest.getFullName(), orgRequest.getInn().trim(), orgRequest.getKpp(),
+        this(orgRequest.getId(), orgRequest.getName(), orgRequest.getFullName(), orgRequest.getInn(), orgRequest.getKpp(),
                 orgRequest.getAddress(), orgRequest.getPhone(), orgRequest.getIsActive(), Collections.emptySet());
     }
 
@@ -137,7 +123,9 @@ public class OrganizationView {
     }
 
     public void setInn(String inn) {
-        this.inn = inn;
+        if(inn != null) {
+            this.inn = inn.trim();
+        }
     }
 
     public String getKpp() {
@@ -164,15 +152,18 @@ public class OrganizationView {
         this.address = address;
     }
 
-    public Boolean getIsActive() {
+    public String getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(Boolean isActive) {
-        if (isActive == null) {
-            this.isActive = false;
+    public void setIsActive(String active) {
+        isActive = active;
+    }
+
+    public void setIsActive(Boolean active) {
+        if (active != null) {
+            isActive = active.toString();
         }
-        this.isActive = isActive;
     }
 
     public void setOffices(Set<OfficeView> offices) {
@@ -189,15 +180,15 @@ public class OrganizationView {
         return offices;
     }
 
-//    public void addOffice(OfficeView officeView) {
-//        getOffices().add(officeView);
-//        officeView.setOrganization(this);
-//    }
-//
-//    public void removeOffice(OfficeView officeView) {
-//        getOffices().remove(officeView);
-//        officeView.setOrganization(null);
-//    }
+    public void addOffice(OfficeView officeView) {
+        getOffices().add(officeView);
+        officeView.setOrganization(this);
+    }
+
+    public void removeOffice(OfficeView officeView) {
+        getOffices().remove(officeView);
+        officeView.setOrganization(null);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -211,7 +202,8 @@ public class OrganizationView {
                 Objects.equals(kpp, that.kpp) &&
                 Objects.equals(phone, that.phone) &&
                 Objects.equals(address, that.address) &&
-                Objects.equals(isActive, that.isActive);
+                Objects.equals(isActive, that.isActive) &&
+                Objects.equals(offices, that.offices);
     }
 
     @Override
@@ -230,7 +222,8 @@ public class OrganizationView {
                 ", kpp='" + kpp + '\'' +
                 ", phone='" + phone + '\'' +
                 ", address='" + address + '\'' +
-                ", isActive=" + isActive +
+                ", isActive='" + isActive + '\'' +
+                ", offices=" + offices +
                 '}';
     }
 }

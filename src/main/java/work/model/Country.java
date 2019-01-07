@@ -15,13 +15,16 @@ import java.util.Objects;
 @Entity
 public class Country implements Serializable {
 
+    /**
+     * Уникальный идентификатор
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Short id;
 
     /**
-     * Служебное поле hibernate
+     * Служебное поле Hibernate
      */
     @Version
     private Integer version;
@@ -39,12 +42,18 @@ public class Country implements Serializable {
     private String name;
 
     /**
-     * Конструктор для hibernate
+     * Конструктор для Hibernate
      */
     public Country() {
 
     }
 
+    /**
+     * Конструктор
+     *
+     * @param code цифровой код
+     * @param name название
+     */
     public Country(String code, String name) {
         this.code = code;
         this.name = name;

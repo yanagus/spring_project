@@ -51,13 +51,13 @@ public class TestOrganizationController {
     public void validateOrganizationById() throws Exception {
         String organization1 = "{\"data\":{\"id\":\"1\",\"name\":\"Орг\",\"fullName\":\"Организация\"," +
                 "\"inn\":\"0123456789\",\"kpp\":\"123456789\",\"address\":\"г. Саратов\",\"phone\":\"+7(845)222-22-22\"," +
-                "\"isActive\":false}}";
+                "\"isActive\":null}}";
         mockMvc.perform(get("/api/organization/1")).andExpect(status().isOk())
                 .andExpect(content().json(organization1));
         String organization2 = "{\"data\":{\"id\":\"2\",\"name\":\"OCS\",\"fullName\":\"OCS Distribution\"," +
                 "\"inn\":\"1234567890\",\"kpp\":\"123456789\"," +
                 "\"address\":\"108811, г. Москва, Киевское шоссе, Румянцево, офисный парк «Комсити» д.6 стр.1\"," +
-                "\"phone\":\"+7 (495) 995-2575\",\"isActive\":false}}";
+                "\"phone\":\"+7 (495) 995-2575\",\"isActive\":null}}";
         mockMvc.perform(get("/api/organization/2")).andExpect(status().isOk())
                 .andExpect(content().json(organization2));
         mockMvc.perform(get("/api/organization/hh")).andExpect(status().is4xxClientError())
@@ -75,7 +75,7 @@ public class TestOrganizationController {
         Wrapper<OrganizationView> wrapper = responseEntity.getBody();
         OrganizationView organizationView = new OrganizationView("2", "OCS", "OCS Distribution",
                 "1234567890","123456789", "+7 (495) 995-2575",
-                "108811, г. Москва, Киевское шоссе, Румянцево, офисный парк «Комсити» д.6 стр.1", false, null);
+                "108811, г. Москва, Киевское шоссе, Румянцево, офисный парк «Комсити» д.6 стр.1", "false", null);
         Assert.assertEquals(organizationView, wrapper.getData());
         Assert.assertTrue(headers.getContentType().includes(MediaType.APPLICATION_JSON));
     }
@@ -98,7 +98,7 @@ public class TestOrganizationController {
     public void testPostNewOrganizationAndGet() {
         restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
         OrganizationView organizationView = new OrganizationView(null, "название", "полн.название", "1111111111", "000000000",
-                "8 800 000 00 00", "Москва", true, null);
+                "8 800 000 00 00", "Москва", "true", null);
         HttpEntity<OrganizationView> entity = new HttpEntity<>(organizationView);
         ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/organization/save", HttpMethod.POST,
                 entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
@@ -116,7 +116,7 @@ public class TestOrganizationController {
     public void testPostNewNotValidOrganization() {
         restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
         OrganizationView organizationView = new OrganizationView(null, "", "полн.название",
-                "0123456789", "000000000","8 800 000 00 00", null, true, null);
+                "0123456789", "000000000","8 800 000 00 00", null, "true", null);
         HttpEntity<OrganizationView> entity = new HttpEntity<>(organizationView);
         ResponseEntity<ErrorWrapper<ResponseMessage>> responseEntity = restTemplate.exchange("/api/organization/save",
                 HttpMethod.POST, entity, new ParameterizedTypeReference<ErrorWrapper<ResponseMessage>>() {});

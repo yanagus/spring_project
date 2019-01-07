@@ -15,6 +15,9 @@ import java.util.Objects;
 @Entity
 public class Position implements Serializable{
 
+    /**
+     * Уникальный идентификатор
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -33,14 +36,18 @@ public class Position implements Serializable{
     private String name;
 
     /**
-     * Конструктор для hibernate
+     * Конструктор для Hibernate
      */
     public Position() {
 
     }
 
+    /**
+     * Конструктор
+     * @param name название должности
+     */
     public Position(String name) {
-        this.name = name;
+        setName(name);
     }
 
     public Short getId() {
@@ -80,5 +87,13 @@ public class Position implements Serializable{
     public int hashCode() {
 
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

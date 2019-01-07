@@ -7,11 +7,22 @@ import java.util.Objects;
  */
 public class ResponseMessage {
 
+    /**
+     * Сообщение об ошибке
+     */
     private String message;
 
+    /**
+     * Пустой конструктор
+     */
     public ResponseMessage() {
     }
 
+    /**
+     * Конструктор
+     *
+     * @param message сообщение об ошибке
+     */
     public ResponseMessage(String message) {
         this.message = message;
     }

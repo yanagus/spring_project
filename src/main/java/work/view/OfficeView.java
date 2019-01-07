@@ -1,49 +1,84 @@
 package work.view;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import work.view.inputView.OfficeViewRequest;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+/**
+ * Класс офиса для сериализации в JSON
+ */
 @JsonPropertyOrder({"id", "name", "address", "phone", "isActive"})
 public class OfficeView {
 
-    @JsonView(Views.GetByIdView.class)
+    /**
+     * Уникальный идентификатор офиса
+     */
+    @JsonView({Views.GetByIdView.class, Views.FilteredList.class})
     private String id;
 
-    @Size(max = 50)
-    @NotEmpty(message = "name cannot be null")
-    @JsonView(Views.GetByIdView.class)
+    /**
+     * Название офиса
+     */
+    @JsonView({Views.GetByIdView.class, Views.FilteredList.class, Views.SaveView.class})
     private String name;
 
-    @Size(max = 25)
+    /**
+     * Телефон
+     */
     @JsonView(Views.GetByIdView.class)
     private String phone;
 
-    @Size(max = 100)
-    @NotEmpty(message = "address cannot be null")
+    /**
+     * Адрес
+     */
     @JsonView(Views.GetByIdView.class)
     private String address;
 
-    @JsonView(Views.GetByIdView.class)
-    private Boolean isActive;
+    /**
+     * Статус
+     */
+    @JsonView({Views.GetByIdView.class, Views.FilteredList.class})
+    private String isActive;
 
+    /**
+     * Организация
+     */
+    @JsonManagedReference
     private OrganizationView organization;
+
+    /**
+     * Работники
+     */
+    @JsonBackReference
+    private Set<EmployeeView> employees;
 
     public OfficeView() {
     }
 
-    public OfficeView(String id, @Size(max = 50) @NotEmpty(message = "name cannot be null") String name,
-                      @Size(max = 25) String phone, @Size(max = 100) @NotEmpty(message = "address cannot be null") String address,
-                      Boolean isActive, OrganizationView organization) {
+    public OfficeView(String id, String name, String phone, String address, String isActive, OrganizationView organization, Set<EmployeeView> employees) {
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.address = address;
-        this.isActive = isActive;
+        setIsActive(isActive);
         this.organization = organization;
+        setEmployees(employees);
+    }
+
+    /**
+     * Конструктор для преобразования из класса для десериализации
+     * @param officeRequest класс для десериализации из JSON
+     */
+    public OfficeView(OfficeViewRequest officeRequest) {
+        this(officeRequest.getId(), officeRequest.getName(), officeRequest.getPhone(), officeRequest.getAddress(), officeRequest.getIsActive(),
+                null, Collections.emptySet());
     }
 
     public String getId() {
@@ -78,12 +113,18 @@ public class OfficeView {
         this.address = address;
     }
 
-    public Boolean getIsActive() {
+    public String getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(Boolean active) {
+    public void setIsActive(String active) {
         isActive = active;
+    }
+
+    public void setIsActive(Boolean active) {
+        if (active != null) {
+            isActive = active.toString();
+        }
     }
 
     public OrganizationView getOrganization() {
@@ -92,6 +133,33 @@ public class OfficeView {
 
     public void setOrganization(OrganizationView organization) {
         this.organization = organization;
+        if (organization != null) {
+            organization.getOffices().add(this);
+        }
+    }
+
+    public Set<EmployeeView> getEmployees() {
+        if (employees == null) {
+            employees = new HashSet<>();
+        }
+        return employees;
+    }
+
+    public void setEmployees(Set<EmployeeView> employees) {
+        if (employees == null) {
+            this.employees = Collections.emptySet();
+        }
+        this.employees = employees;
+    }
+
+    public void addEmployee(EmployeeView employee) {
+        getEmployees().add(employee);
+        employee.setOffice(this);
+    }
+
+    public void removeEmployee(EmployeeView employee) {
+        getEmployees().remove(employee);
+        employee.setOffice(null);
     }
 
     @Override

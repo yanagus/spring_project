@@ -7,19 +7,39 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
+/**
+ * Класс документа для сериализации в JSON
+ */
 @JsonPropertyOrder({"name", "code"})
 public class DocumentView {
 
+    /**
+     * Уникальный идентификатор
+     */
     private String id;
 
+    /**
+     * Код документа
+     */
     @Size(max = 2)
     @NotEmpty(message = "code cannot be null")
     @JsonView(Views.ListView.class)
     private String code;
 
+    /**
+     * Название документа
+     */
     @Size(max = 50)
     @JsonView(Views.ListView.class)
     private String name;
+
+    public DocumentView() {
+    }
+
+    public DocumentView(String code, String name) {
+        setCode(code);
+        this.name = name;
+    }
 
     public String getId() {
         return id;
@@ -34,7 +54,9 @@ public class DocumentView {
     }
 
     public void setCode(String code) {
-        this.code = code;
+        if(code != null) {
+            this.code = code.trim();
+        }
     }
 
     public String getName() {
@@ -42,15 +64,6 @@ public class DocumentView {
     }
 
     public void setName(String name) {
-        this.name = name;
-    }
-
-    public DocumentView() {
-    }
-
-    public DocumentView(String id, @Size(max = 2) @NotEmpty(message = "code cannot be null") String code, @Size(max = 50) String name) {
-        this.id = id;
-        this.code = code;
         this.name = name;
     }
 

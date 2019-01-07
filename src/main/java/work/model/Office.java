@@ -1,11 +1,17 @@
 package work.model;
 
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Fetch;
-
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Column;
+import javax.persistence.Version;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.FetchType;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,13 +21,16 @@ import java.util.Set;
 @Entity
 public class Office implements Serializable {
 
+    /**
+     * Уникальный идентификатор
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
     /**
-     * Служебное поле hibernate
+     * Служебное поле Hibernate
      */
     @Version
     private Integer version;
@@ -50,25 +59,40 @@ public class Office implements Serializable {
     @Column(name = "is_active")
     private Boolean isActive;
 
+    /**
+     * Организация
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "org_id")
     private Organization organization;
 
+    /**
+     * Множество работников, относящихся к данному офису
+     */
     @OneToMany(mappedBy = "office")
     private Set<Employee> employees;
 
     /**
-     * Конструктор для hibernate
+     * Конструктор для Hibernate
      */
     public Office() {
 
     }
 
+    /**
+     * Конструктор
+     *
+     * @param name название
+     * @param phone телефон
+     * @param address адрес
+     * @param isActive статус
+     * @param organization организация
+     */
     public Office(String name, String phone, String address, Boolean isActive, Organization organization) {
         this.name = name;
         this.phone = phone;
         this.address = address;
-        this.isActive = isActive;
+        setIsActive(isActive);
         this.organization = organization;
     }
 
@@ -112,17 +136,32 @@ public class Office implements Serializable {
         isActive = active;
     }
 
+    public void setIsActive(String active) {
+        if (active != null) {
+            isActive = Boolean.parseBoolean(active);
+        }
+    }
+
     public Organization getOrganization() {
         return organization;
     }
 
     public void setOrganization(Organization organization) {
         this.organization = organization;
-
+        if (organization != null) {
+            organization.getOffices().add(this);
+        }
     }
 
     public Set<Employee> getEmployees() {
         return employees;
+    }
+
+    public void setEmployees(Set<Employee> employees) {
+        if (employees == null) {
+            this.employees = Collections.emptySet();
+        }
+        this.employees = employees;
     }
 
     public void addEmployee(Employee employee) {
@@ -145,12 +184,25 @@ public class Office implements Serializable {
                 Objects.equals(phone, office.phone) &&
                 Objects.equals(address, office.address) &&
                 Objects.equals(isActive, office.isActive) &&
-                Objects.equals(organization, office.organization);
+                Objects.equals(organization, office.organization) &&
+                Objects.equals(employees, office.employees);
     }
 
     @Override
     public int hashCode() {
 
         return Objects.hash(id, name, phone, address, isActive, organization);
+    }
+
+    @Override
+    public String toString() {
+        return "Office{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                ", isActive=" + isActive +
+                ", organization=" + organization +
+                '}';
     }
 }

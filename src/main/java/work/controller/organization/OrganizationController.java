@@ -4,7 +4,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import work.controller.EntityAlreadyExistException;
 import work.controller.EntityNotFoundException;
 import work.service.IService;
@@ -17,12 +23,20 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+/**
+ * Контроллер для организаций
+ */
 @RestController
 @RequestMapping(value = "/api/organization", produces = APPLICATION_JSON_VALUE)
 public class OrganizationController {
 
     private final IService<OrganizationView, Integer> organizationService;
 
+    /**
+     * Конструктор контроллера
+     *
+     * @param organizationService сервис организации
+     */
     @Autowired
     public OrganizationController(IService<OrganizationView, Integer> organizationService) {
         this.organizationService = organizationService;
@@ -30,6 +44,7 @@ public class OrganizationController {
 
     /**
      * Сохранить новую организацию в базе данных
+     *
      * @param organization новая организация
      * @return экземпляр типа ResponseView с сообщением об успешном сохранении новой организации
      */
@@ -46,23 +61,18 @@ public class OrganizationController {
 
     /**
      * Обновить данные организации
+     *
      * @param organization обновлённые данные
      * @return экземпляр типа ResponseView с сообщением об успешном обновлении текущей организации
      */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public ResponseView updateOrganization(@Validated(Views.UpdateView.class) @RequestBody OrganizationViewRequest organization) {
-        OrganizationView organizationView = organizationService.findById(Integer.parseInt(organization.getId()));
-        organizationView.setName(organization.getName());
-        organizationView.setFullName(organization.getFullName());
-        organizationView.setInn(organization.getInn());
-        organizationView.setKpp(organization.getKpp());
-        organizationView.setAddress(organization.getAddress());
-        if (organization.getPhone() != null) {
-            organizationView.setPhone(organization.getPhone());
+        organizationById(organization.getId());
+        OrganizationView organizationByInn = organizationService.findByParameter(organization.getInn().trim());
+        if (organizationByInn != null && !organization.getId().equals(organizationByInn.getId())) {
+            throw new EntityAlreadyExistException("организация с таким ИНН уже существует в базе данных, её id = " + organizationByInn.getId());
         }
-        if (organization.getIsActive() != null) {
-            organizationView.setPhone(organization.getPhone());
-        }
+        OrganizationView organizationView = new OrganizationView(organization);
         organizationService.update(organizationView);
         return new ResponseView("success");
     }
@@ -75,6 +85,7 @@ public class OrganizationController {
 
     /**
      * Получить список организаций по фильтру
+     *
      * @param organization фильтр
      * @return список организаций
      */
@@ -87,6 +98,7 @@ public class OrganizationController {
 
     /**
      * Найти организацию по уникальному идентификатору id
+     *
      * @param organizationIdentifier id организации
      * @return экземпляр типа OrganizationView
      */

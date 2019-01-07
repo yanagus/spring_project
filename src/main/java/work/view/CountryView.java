@@ -7,16 +7,28 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
+/**
+ * Класс страны для сериализации в JSON
+ */
 @JsonPropertyOrder({"name", "code"})
 public class CountryView {
 
+    /**
+     * Уникальный идентификатор
+     */
     private String id;
 
+    /**
+     * Код страны
+     */
     @Size(max = 3)
     @NotEmpty(message = "code cannot be null")
     @JsonView(Views.ListView.class)
     private String code;
 
+    /**
+     * Название страны
+     */
     @Size(max = 50)
     @JsonView(Views.ListView.class)
     private String name;
@@ -24,9 +36,13 @@ public class CountryView {
     public CountryView() {
     }
 
-    public CountryView(@Size(max = 3) @NotEmpty(message = "code cannot be null") String code, @Size(max = 50) String name) {
-        this.code = code;
+    public CountryView(String code, String name) {
+        setCode(code);
         this.name = name;
+    }
+
+    public CountryView(String code) {
+        this(code, null);
     }
 
     public String getId() {
@@ -42,7 +58,9 @@ public class CountryView {
     }
 
     public void setCode(String code) {
-        this.code = code;
+        if (code != null) {
+            this.code = code.trim();
+        }
     }
 
     public String getName() {
@@ -63,11 +81,11 @@ public class CountryView {
                 Objects.equals(name, that.name);
     }
 
-//    @Override
-//    public int hashCode() {
-//
-//        return Objects.hash(id, code, name);
-//    }
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, code, name);
+    }
 
     @Override
     public String toString() {

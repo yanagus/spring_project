@@ -52,13 +52,13 @@ public class TestEmployeeController {
                 "\"position\":\"менеджер\",\"phone\":\"+7(927)111-11-11\"," +
                 "\"docName\":\"Паспорт гражданина Российской Федерации\",\"docNumber\":\"6305 454552\"," +
                 "\"docDate\":\"2007-05-25\",\"citizenshipName\":\"Российская Федерация\"," +
-                "\"citizenshipCode\":\"643\",\"isIdentified\":false}}";
+                "\"citizenshipCode\":\"643\",\"isIdentified\":null}}";
         mockMvc.perform(get("/api/user/1")).andExpect(status().isOk())
                 .andExpect(content().json(employee1));
         String employee2 = "{\"data\":{\"id\":\"2\",\"firstName\":\"Петр\",\"secondName\":null,\"middleName\":null," +
                 "\"position\":\"менеджер\",\"phone\":\"+7(917)000-00-00\",\"docName\":\"Паспорт гражданина Российской Федерации\"," +
                 "\"docNumber\":\"6305 454356\",\"docDate\":\"2017-02-03\",\"citizenshipName\":\"Российская Федерация\"," +
-                "\"citizenshipCode\":\"643\",\"isIdentified\":false}}";
+                "\"citizenshipCode\":\"643\",\"isIdentified\":null}}";
         mockMvc.perform(get("/api/user/2")).andExpect(status().isOk())
                 .andExpect(content().json(employee2));
         mockMvc.perform(get("/api/user/3")).andExpect(status().is4xxClientError())
@@ -76,7 +76,7 @@ public class TestEmployeeController {
         Wrapper<EmployeeView> wrapper = responseEntity.getBody();
         PositionView positionView = new PositionView("менеджер");
         EmployeeView employeeView = new EmployeeView("1", "Иван", null, null,
-                null, "+7(927)111-11-11",false, positionView, null, null);
+                null, "+7(927)111-11-11", "false", positionView, null, null, null);
         Assert.assertEquals(employeeView, wrapper.getData());
         Assert.assertTrue(headers.getContentType().includes(MediaType.APPLICATION_JSON));
     }

@@ -1,8 +1,16 @@
 package work.model;
 
-import javax.persistence.*;
+import org.hibernate.annotations.Cascade;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Column;
+import javax.persistence.Version;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -13,6 +21,9 @@ import java.util.Set;
 @Entity
 public class Organization implements Serializable {
 
+    /**
+     * Уникальный идентификатор
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
@@ -71,8 +82,11 @@ public class Organization implements Serializable {
      */
     @OneToMany(mappedBy = "organization", cascade = {
             CascadeType.PERSIST,
-            CascadeType.MERGE
+            CascadeType.MERGE,
+            CascadeType.REFRESH,
+            CascadeType.DETACH
     })
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private Set<Office> offices;
 
     /**
@@ -82,6 +96,17 @@ public class Organization implements Serializable {
 
     }
 
+    /**
+     * Конструктор
+     *
+     * @param name название
+     * @param fullName полное название
+     * @param inn ИНН
+     * @param kpp КПП
+     * @param phone телефон
+     * @param address адрес
+     * @param isActive статус
+     */
     public Organization(String name, String fullName, String inn, String kpp, String phone, String address, Boolean isActive) {
         this.name = name;
         this.fullName = fullName;
@@ -89,7 +114,7 @@ public class Organization implements Serializable {
         this.kpp = kpp;
         this.phone = phone;
         this.address = address;
-        this.isActive = isActive;
+        setIsActive(isActive);
     }
 
     public Integer getId() {
@@ -156,6 +181,12 @@ public class Organization implements Serializable {
         isActive = active;
     }
 
+    public void setIsActive(String active) {
+        if (active != null) {
+            isActive = Boolean.parseBoolean(active);
+        }
+    }
+
     public Set<Office> getOffices() {
         if (offices == null) {
             offices = new HashSet<>();
@@ -164,9 +195,6 @@ public class Organization implements Serializable {
     }
 
     public void setOffices(Set<Office> offices) {
-        if (offices == null) {
-            this.offices = Collections.emptySet();
-        }
         this.offices = offices;
     }
 
@@ -199,5 +227,19 @@ public class Organization implements Serializable {
     public int hashCode() {
 
         return Objects.hash(id, name, fullName, inn, kpp, phone, address, isActive);
+    }
+
+    @Override
+    public String toString() {
+        return "Organization{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", inn='" + inn + '\'' +
+                ", kpp='" + kpp + '\'' +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                ", isActive=" + isActive +
+                '}';
     }
 }

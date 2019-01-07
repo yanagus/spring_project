@@ -1,17 +1,18 @@
 package work.model;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
+import javax.persistence.Table;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.FetchType;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -23,17 +24,23 @@ import java.util.Objects;
 @Table(name = "Document_Data")
 public class DocumentData implements Serializable {
 
+    /**
+     * Уникальный идентификатор
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
     /**
-     * Служебное поле hibernate
+     * Служебное поле Hibernate
      */
     @Version
     private Integer version;
 
+    /**
+     * Документ
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doc_id")
     private Document document;
@@ -51,17 +58,28 @@ public class DocumentData implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    /**
+     * Работник
+     */
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "empl_id")
     private Employee employee;
 
     /**
-     * Конструктор для hibernate
+     * Конструктор для Hibernate
      */
     public DocumentData() {
 
     }
 
+    /**
+     * Конструктор
+     *
+     * @param document документ
+     * @param number номер документа
+     * @param date дата документа
+     * @param employee работник
+     */
     public DocumentData(Document document, String number, Date date, Employee employee) {
         this.document = document;
         this.number = number;
@@ -125,5 +143,16 @@ public class DocumentData implements Serializable {
     public int hashCode() {
 
         return Objects.hash(id, document, number, date, employee);
+    }
+
+    @Override
+    public String toString() {
+        return "DocumentData{" +
+                "id=" + id +
+                ", document=" + document +
+                ", number='" + number + '\'' +
+                ", date=" + date +
+                ", employee=" + employee +
+                '}';
     }
 }

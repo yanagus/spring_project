@@ -27,12 +27,18 @@ public class PositionServiceImpl implements IService<PositionView, Short> {
         this.mapperFacade = mapperFacade;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void add(@Valid PositionView positionView) {
         Position position = mapperFacade.map(positionView, Position.class);
         dao.save(position);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(@Valid PositionView positionView) {
         Position position = mapperFacade.map(positionView, Position.class);

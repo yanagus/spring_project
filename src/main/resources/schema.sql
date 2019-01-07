@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS Organization (
     kpp         CHAR(9) NOT NULL,
     phone       VARCHAR(25),
     address     VARCHAR(100) NOT NULL,
-    is_active   BOOLEAN DEFAULT FALSE
+    is_active   BOOLEAN
 );
 
 COMMENT ON TABLE Organization IS 'Организация';
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS Office (
     name        VARCHAR(50) NOT NULL,
     phone       VARCHAR(25),
     address     VARCHAR(100),
-    is_active   BOOLEAN DEFAULT FALSE,
+    is_active   BOOLEAN,
     org_id      INTEGER REFERENCES Organization (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS Employee (
     middle_name     VARCHAR(50),
     last_name       VARCHAR(50),
     phone           VARCHAR(25),
-    is_identified   BOOLEAN DEFAULT FALSE,
+    is_identified   BOOLEAN,
     pos_id          SMALLINT REFERENCES Position (id) ON DELETE NO ACTION ON UPDATE CASCADE,
     country_id      SMALLINT REFERENCES Country (id) ON DELETE NO ACTION ON UPDATE CASCADE,
     office_id       INTEGER REFERENCES Office (id) ON DELETE SET NULL ON UPDATE CASCADE
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS Document_Data (
     doc_id      TINYINT REFERENCES Document (id) ON DELETE NO ACTION ON UPDATE CASCADE,
     number      VARCHAR(30) NOT NULL UNIQUE,
     date        DATE,
-    empl_id     INTEGER REFERENCES Employee (id) ON DELETE CASCADE ON UPDATE CASCADE
+    empl_id     INTEGER UNIQUE REFERENCES Employee (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 COMMENT ON TABLE Document_Data IS 'Персональные данные работника';

@@ -27,12 +27,18 @@ public class DocumentDataServiceImpl implements IService<DocumentDataView, Integ
         this.mapperFacade = mapperFacade;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void add(@Valid DocumentDataView documentDataView) {
         DocumentData documentData = mapperFacade.map(documentDataView, DocumentData.class);
         dao.save(documentData);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(@Valid DocumentDataView documentDataView) {
         DocumentData documentData = mapperFacade.map(documentDataView, DocumentData.class);
@@ -59,6 +65,9 @@ public class DocumentDataServiceImpl implements IService<DocumentDataView, Integ
         return mapperFacade.map(documentData, DocumentDataView.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(readOnly = true)
     public DocumentDataView findByParameter(String parameter) {

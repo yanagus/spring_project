@@ -1,69 +1,109 @@
 package work.view;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import work.view.inputView.EmployeeViewRequest;
+
 import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
 
+/**
+ * Класс работника для сериализации в JSON
+ */
 @JsonPropertyOrder({"id", "firstName", "secondName", "middleName", "lastName", "position", "phone", "docName", "docNumber",
 "docDate", "citizenshipName", "citizenshipCode", "isIdentified"})
 public class EmployeeView {
 
-    @JsonView(Views.GetByIdView.class)
+    /**
+     * Уникальный идентификатор работника
+     */
+    @JsonView({Views.GetByIdView.class, Views.FilteredList.class})
     private String id;
 
-    @Size(max = 50)
-    @NotEmpty(message = "name cannot be null")
-    @JsonView(Views.GetByIdView.class)
+    /**
+     * Имя
+     */
+    @JsonView({Views.GetByIdView.class, Views.FilteredList.class})
     private String firstName;
 
-    @Size(max = 50)
-    @JsonView(Views.GetByIdView.class)
+    /**
+     * Второе имя
+     */
+    @JsonView({Views.GetByIdView.class, Views.FilteredList.class})
     private String secondName;
 
-    @Size(max = 50)
-    @JsonView(Views.GetByIdView.class)
+    /**
+     * Среднее имя
+     */
+    @JsonView({Views.GetByIdView.class, Views.FilteredList.class})
     private String middleName;
 
-    @Size(max = 50)
+    /**
+     * Фамилия
+     */
     private String lastName;
 
-    @Size(max = 25)
+    /**
+     * Телефон
+     */
     @JsonView(Views.GetByIdView.class)
     private String phone;
 
+    /**
+     * Статус
+     */
     @JsonView(Views.GetByIdView.class)
-    private Boolean isIdentified;
+    private String isIdentified;
 
+    /**
+     * Должность
+     */
     private PositionView position;
 
+    /**
+     * Гражданство
+     */
     private CountryView country;
 
+    /**
+     * Офис
+     */
+    @JsonManagedReference
     private OfficeView office;
 
-    private Set<DocumentDataView> documentDataSet;
+    /**
+     * Данные документа
+     */
+    @JsonManagedReference
+    private DocumentDataView documentData;
 
     public EmployeeView() {
     }
 
-    public EmployeeView(String id, @Size(max = 50) @NotEmpty(message = "name cannot be null") String firstName,
-                        @Size(max = 50) String secondName, @Size(max = 50) String middleName, @Size(max = 50) String lastName,
-                        @Size(max = 25) String phone, Boolean isIdentified, PositionView position,
-                        CountryView country, OfficeView office) {
+    public EmployeeView(String id, String firstName, String secondName, String middleName, String lastName, String phone,
+                        String isIdentified, PositionView position, CountryView country, OfficeView office, DocumentDataView documentData) {
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.phone = phone;
-        this.isIdentified = isIdentified;
+        setIsIdentified(isIdentified);
         this.position = position;
         this.country = country;
         this.office = office;
+        this.documentData = documentData;
+    }
+
+    /**
+     * Конструктор для преобразования из класса для десериализации
+     * @param employeeRequest класс для десериализации
+     */
+    public EmployeeView(EmployeeViewRequest employeeRequest) {
+        this(employeeRequest.getId(), employeeRequest.getFirstName(), employeeRequest.getSecondName(), employeeRequest.getMiddleName(),
+                employeeRequest.getLastName(), employeeRequest.getPhone(), employeeRequest.getIsIdentified(), null, null, null, null);
     }
 
     public String getId() {
@@ -114,21 +154,30 @@ public class EmployeeView {
         this.phone = phone;
     }
 
-    public Boolean getIsIdentified() {
+    public String getIsIdentified() {
         return isIdentified;
     }
 
-    public void setIsIdentified(Boolean identified) {
+    public void setIsIdentified(String identified) {
         isIdentified = identified;
+    }
+
+    public void setIsIdentified(Boolean identified) {
+        if (identified != null) {
+            isIdentified = identified.toString();
+        }
     }
 
     public PositionView getPosition() {
         return position;
     }
 
-    @JsonView(Views.GetByIdView.class)
+    @JsonView({Views.GetByIdView.class, Views.FilteredList.class})
     @JsonProperty("position")
     public String getPositionName() {
+        if (position == null) {
+            return null;
+        }
         return position.getName();
     }
 
@@ -141,12 +190,18 @@ public class EmployeeView {
     }
 
     @JsonView(Views.GetByIdView.class)
-    public String getcitizenshipCode() {
+    public String getCitizenshipCode() {
+        if (country == null) {
+            return null;
+        }
         return country.getCode();
     }
 
     @JsonView(Views.GetByIdView.class)
-    public String getcitizenshipName(){
+    public String getCitizenshipName(){
+        if (country == null) {
+            return null;
+        }
         return country.getName();
     }
 
@@ -162,45 +217,36 @@ public class EmployeeView {
         this.office = office;
     }
 
-    public String getOfficeId() {
-        return office.getId();
+    public DocumentDataView getDocumentData() {
+        return documentData;
     }
 
-    public Set<DocumentDataView> getDocumentDataSet() {
-        return documentDataSet;
+    public void setDocumentData(DocumentDataView documentData) {
+        this.documentData = documentData;
     }
 
-    public void setDocumentDataSet(Set<DocumentDataView> documentDataSet) {
-        this.documentDataSet = documentDataSet;
-    }
-
-    // пока в documentDataSet только 1 шт.
     @JsonView(Views.GetByIdView.class)
     public String getDocName(){
-        String docName = null;
-        if (documentDataSet.iterator().hasNext()) {
-            docName = documentDataSet.iterator().next().getDocument().getName();
+        if (documentData == null) {
+            return null;
         }
-        return docName;
+        return documentData.getDocument().getName();
     }
 
-    // пока в documentDataSet только 1 шт.
     @JsonView(Views.GetByIdView.class)
     public String getDocNumber() {
-        String docNumber = null;
-        if (documentDataSet.iterator().hasNext()){
-            docNumber = documentDataSet.iterator().next().getNumber();
+        if (documentData == null) {
+            return null;
         }
-        return docNumber;
+        return documentData.getNumber();
     }
 
     @JsonView(Views.GetByIdView.class)
     public Date getDocDate() {
-        Date docDate = null;
-        if (documentDataSet.iterator().hasNext()){
-            docDate = documentDataSet.iterator().next().getDate();
+        if (documentData == null) {
+            return null;
         }
-        return docDate;
+        return documentData.getDate();
     }
 
     @Override
@@ -218,13 +264,13 @@ public class EmployeeView {
                 Objects.equals(position, that.position) &&
                 Objects.equals(country, that.country) &&
                 Objects.equals(office, that.office) &&
-                Objects.equals(documentDataSet, that.documentDataSet);
+                Objects.equals(documentData, that.documentData);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, firstName, secondName, middleName, lastName, phone, isIdentified, position, country, office, documentDataSet);
+        return Objects.hash(id, firstName, secondName, middleName, lastName, phone, isIdentified, position, country, office);
     }
 
     @Override

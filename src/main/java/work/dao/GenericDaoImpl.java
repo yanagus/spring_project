@@ -23,4 +23,9 @@ public class GenericDaoImpl<T extends Serializable, ID extends Number> extends A
     public List<T> loadByParametersList(T entity) {
         return null;
     }
+
+    @Override
+    public void update(T entity) {
+
+    }
 }

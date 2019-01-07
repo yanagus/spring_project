@@ -106,18 +106,30 @@ public class ResponseWrapper implements ResponseBodyAdvice<Object> {
 /**
  * Класс-обёртка ответов контроллеров.
  * Все возвращаемые контроллерами типы данных представлений находятся в параметре "data"
+ *
  * @param <T> тип представления
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonSerialize
 class Wrapper<T> {
 
+    /**
+     * Обёртка для данных
+     */
     @JsonView({Views.GetByIdView.class, Views.SaveView.class, Views.ListView.class, Views.UpdateView.class, Views.FilteredList.class})
     private T data;
 
+    /**
+     * Пустой конструктор
+     */
     public Wrapper() {
     }
 
+    /**
+     * Конструктор
+     *
+     * @param data данные
+     */
     public Wrapper(T data) {
         this.data = data;
     }
@@ -154,17 +166,29 @@ class Wrapper<T> {
 
 /**
  * Класс-обёртка для сообщений об ошибке
+ *
  * @param <T> ResponseMessage
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonSerialize
 class ErrorWrapper<T> {
 
+    /**
+     * Обёртка для сообщений об ошибке
+     */
     private T error;
 
+    /**
+     * Пустой контруктор
+     */
     public ErrorWrapper() {
     }
 
+    /**
+     * Конструктор
+     *
+     * @param error ошибка
+     */
     public ErrorWrapper(T error) {
         this.error = error;
     }
