@@ -98,4 +98,13 @@ public class Country implements Serializable {
 
         return Objects.hash(id, code, name);
     }
+
+    @Override
+    public String toString() {
+        return "Country{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

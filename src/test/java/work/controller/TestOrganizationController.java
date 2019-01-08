@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.Before;
@@ -28,6 +29,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import work.Application;
 import work.view.OrganizationView;
 import work.view.ResponseView;
+import work.view.Views;
 
 
 @RunWith(SpringRunner.class)
@@ -74,8 +76,9 @@ public class TestOrganizationController {
                 entity, new ParameterizedTypeReference<Wrapper<OrganizationView>>() {});
         Wrapper<OrganizationView> wrapper = responseEntity.getBody();
         OrganizationView organizationView = new OrganizationView("2", "OCS", "OCS Distribution",
-                "1234567890","123456789", "+7 (495) 995-2575",
-                "108811, г. Москва, Киевское шоссе, Румянцево, офисный парк «Комсити» д.6 стр.1", "false", null);
+                "1234567890","123456789",
+                "108811, г. Москва, Киевское шоссе, Румянцево, офисный парк «Комсити» д.6 стр.1",
+                "+7 (495) 995-2575", null, null);
         Assert.assertEquals(organizationView, wrapper.getData());
         Assert.assertTrue(headers.getContentType().includes(MediaType.APPLICATION_JSON));
     }

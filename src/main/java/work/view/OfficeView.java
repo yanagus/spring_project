@@ -1,7 +1,6 @@
 package work.view;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import work.view.inputView.OfficeViewRequest;
@@ -50,7 +49,6 @@ public class OfficeView {
     /**
      * Организация
      */
-    @JsonManagedReference
     private OrganizationView organization;
 
     /**

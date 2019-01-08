@@ -16,6 +16,11 @@ import work.model.Employee;
 import work.model.Position;
 import work.model.Country;
 import work.model.Document;
+import work.model.DocumentData;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Тест методов работы с базой данных
@@ -63,6 +68,7 @@ public class TestDao {
         office.setId(1);
         officeDao.setClazz(Office.class);
         Office office2 = officeDao.loadById(1);
+        Assert.assertEquals(office, office2);
 
         Position position = new Position("менеджер");
         position.setId((short) 1);
@@ -88,6 +94,39 @@ public class TestDao {
         employeeDao.setClazz(Employee.class);
         Employee employee2 = employeeDao.loadById(1);
         Assert.assertEquals(employee, employee2);
-        Assert.assertEquals(office, office2);
+
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
+        Date parsingDate = null;
+        try {
+            parsingDate = ft.parse("2007-05-25");
+            System.out.println(parsingDate);
+        }catch (ParseException e) {
+            System.out.println("Нераспаршена с помощью " + ft);
+        }
+        DocumentData documentData = new DocumentData(document, "6305 454552", parsingDate, employee);
+        documentData.setId(1);
+        DocumentData documentData2 = employee2.getDocumentData();
+        Assert.assertEquals(documentData, documentData2);
+
+    }
+
+    /**
+     * Тест метода сохранения сущностей
+     */
+    @Test
+    public void testSave() {
+        Organization organization = new Organization("Новая", "Новая Организация", "0123456700",
+                "123456780", null, "г. Саратов", true);
+        organization.setId(1);
+        organizationDao.setClazz(Organization.class);
+        organizationDao.save(organization);
+        organization.setId(3);
+        Organization organization2 = organizationDao.loadById(3);
+        Assert.assertEquals(organization, organization2);
+
+        organization.setPhone("322-2233");
+        organizationDao.update(organization);
+        organization2 = organizationDao.loadById(3);
+        Assert.assertEquals(organization, organization2);
     }
 }

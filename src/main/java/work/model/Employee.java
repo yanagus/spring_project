@@ -85,7 +85,7 @@ public class Employee implements Serializable {
     private Country country;
 
     /**
-     * Должность
+     * Офис
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_id")
@@ -240,8 +240,7 @@ public class Employee implements Serializable {
                 Objects.equals(isIdentified, employee.isIdentified) &&
                 Objects.equals(position, employee.position) &&
                 Objects.equals(country, employee.country) &&
-                Objects.equals(office, employee.office) &&
-                Objects.equals(documentData, employee.documentData);
+                Objects.equals(office, employee.office);
     }
 
     @Override

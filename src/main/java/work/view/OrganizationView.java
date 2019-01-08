@@ -202,8 +202,7 @@ public class OrganizationView {
                 Objects.equals(kpp, that.kpp) &&
                 Objects.equals(phone, that.phone) &&
                 Objects.equals(address, that.address) &&
-                Objects.equals(isActive, that.isActive) &&
-                Objects.equals(offices, that.offices);
+                Objects.equals(isActive, that.isActive);
     }
 
     @Override

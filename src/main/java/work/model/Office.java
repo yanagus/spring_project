@@ -184,8 +184,7 @@ public class Office implements Serializable {
                 Objects.equals(phone, office.phone) &&
                 Objects.equals(address, office.address) &&
                 Objects.equals(isActive, office.isActive) &&
-                Objects.equals(organization, office.organization) &&
-                Objects.equals(employees, office.employees);
+                Objects.equals(organization, office.organization);
     }
 
     @Override

@@ -70,7 +70,6 @@ public class EmployeeView {
     /**
      * Офис
      */
-    @JsonManagedReference
     private OfficeView office;
 
     /**

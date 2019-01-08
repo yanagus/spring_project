@@ -21,8 +21,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import work.Application;
+import work.view.CountryView;
 import work.view.EmployeeView;
 import work.view.PositionView;
+import work.view.ResponseView;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -74,10 +76,14 @@ public class TestEmployeeController {
         ResponseEntity<Wrapper<EmployeeView>> responseEntity = restTemplate.exchange("/api/user/1", HttpMethod.GET,
                 entity, new ParameterizedTypeReference<Wrapper<EmployeeView>>() {});
         Wrapper<EmployeeView> wrapper = responseEntity.getBody();
+
         PositionView positionView = new PositionView("менеджер");
+        CountryView countryView = new CountryView("643", "Российская Федерация");
         EmployeeView employeeView = new EmployeeView("1", "Иван", null, null,
-                null, "+7(927)111-11-11", "false", positionView, null, null, null);
+                null, "+7(927)111-11-11", null, positionView, null, null, null);
         Assert.assertEquals(employeeView, wrapper.getData());
+        employeeView.setCountry(countryView);
+        Assert.assertEquals(employeeView.getPositionName(), wrapper.getData().getPositionName());
         Assert.assertTrue(headers.getContentType().includes(MediaType.APPLICATION_JSON));
     }
 
@@ -93,5 +99,23 @@ public class TestEmployeeController {
         ResponseMessage responseMessage = new ResponseMessage("работник с id 4 не найден");
         ErrorWrapper<ResponseMessage> error2 = new ErrorWrapper<>(responseMessage);
         Assert.assertEquals(error2, error);
+    }
+
+    @Test
+    public void testPostNewEmployeeAndGet() {
+        restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
+        EmployeeView employee = new EmployeeView(null, "Екатерина", null, null, null, "322-223", "true",
+                new PositionView("продавец"), null, null, null);
+        HttpEntity<EmployeeView> entity = new HttpEntity<>(employee);
+        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/user/save", HttpMethod.POST,
+                entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
+        Wrapper<ResponseView> wrapper = responseEntity.getBody();
+        Assert.assertEquals(new ResponseView("success"), wrapper.getData());
+        Assert.assertEquals(201, responseEntity.getStatusCodeValue());
+
+        ResponseEntity<Wrapper<EmployeeView>> responseEntityId3 = restTemplate.exchange("/api/user/3", HttpMethod.GET,
+                entity, new ParameterizedTypeReference<Wrapper<EmployeeView>>() {});
+        employee.setId("3");
+        Assert.assertEquals(employee, responseEntityId3.getBody().getData());
     }
 }
