@@ -57,7 +57,8 @@ public class EmployeeController {
      * @return экземпляр типа ResponseView с сообщением об успешном сохранении нового работника
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public @ResponseStatus(HttpStatus.CREATED) ResponseView saveEmployee(@Validated(Views.SaveView.class) @RequestBody EmployeeViewRequest employee) {
+    public @ResponseStatus(HttpStatus.CREATED) ResponseView saveEmployee(
+            @Validated(Views.SaveView.class) @RequestBody EmployeeViewRequest employee) {
         if (employee.getDocNumber() != null) {
             EmployeeView employeeByDocNumber = employeeService.findByParameter(employee.getDocNumber().trim());
             if (employeeByDocNumber != null) {
@@ -92,7 +93,8 @@ public class EmployeeController {
         if (employee.getDocNumber() != null) {
             EmployeeView employeeByDocNumber = employeeService.findByParameter(employee.getDocNumber().trim());
             if (employeeByDocNumber != null && !employee.getId().equals(employeeByDocNumber.getId())) {
-                throw new EntityAlreadyExistException("работник с такими паспортными данными существует, его id = " + employeeByDocNumber.getId());
+                throw new EntityAlreadyExistException("работник с такими паспортными данными существует, его id = "
+                        + employeeByDocNumber.getId());
             }
         }
 
@@ -118,7 +120,8 @@ public class EmployeeController {
      */
     @JsonView(Views.FilteredList.class)
     @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public List<EmployeeView> employeesByFilter(@Validated(Views.FilteredList.class) @RequestBody EmployeeViewRequest employee) {
+    public List<EmployeeView> employeesByFilter(
+            @Validated(Views.FilteredList.class) @RequestBody EmployeeViewRequest employee) {
         OfficeView officeView = checkOffice(employee.getOfficeId());
         if (employee.getFirstName() == null && employee.getLastName() == null && employee.getMiddleName() == null &&
                 employee.getPosition() == null && employee.getDocCode() == null && employee.getCitizenshipCode() == null) {
@@ -133,7 +136,8 @@ public class EmployeeController {
 
         if (employee.getDocCode() != null) {
             DocumentView documentView = new DocumentView(employee.getDocCode(), null);
-            DocumentDataView documentDataView = new DocumentDataView(documentView, null, null, employeeView);
+            DocumentDataView documentDataView = new DocumentDataView(documentView, null,
+                    null, employeeView);
             employeeView.setDocumentData(documentDataView);
         }
 
@@ -182,7 +186,8 @@ public class EmployeeController {
         if (employee.getDocCode() != null || employee.getDocName() != null) {
             DocumentView documentView = new DocumentView(employee.getDocCode(), employee.getDocName());
             if (employee.getDocNumber() != null) {
-                DocumentDataView documentDataView = new DocumentDataView(documentView, employee.getDocNumber(), employee.getDocDate(), employeeView);
+                DocumentDataView documentDataView = new DocumentDataView(documentView,
+                        employee.getDocNumber(), employee.getDocDate(), employeeView);
                 employeeView.setDocumentData(documentDataView);
             }
         }
