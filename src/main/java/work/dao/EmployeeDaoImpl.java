@@ -180,6 +180,8 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Integer> {
             Position position = loadByPositionName(entity.getPosition().getName());
             if (position != null) {
                 entity.setPosition(position);
+            } else {
+                return Collections.emptyList();
             }
         }
 
@@ -187,6 +189,8 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Integer> {
             Country country = loadByCitizenshipCode(entity.getCountry().getCode());
             if (country != null) {
                 entity.setCountry(country);
+            } else {
+                return Collections.emptyList();
             }
         }
 

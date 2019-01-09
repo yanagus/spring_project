@@ -21,9 +21,11 @@ import work.model.DocumentData;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
- * Тест методов работы с базой данных
+ * Тест работы DAO
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {Application.class})
@@ -52,7 +54,7 @@ public class TestDao {
 
 
     /**
-     * Тест метода получения сущностей по id
+     * Тест метода получения сущностей по id и связанных списков
      */
     @Test
     public void testLoadById() {
@@ -69,6 +71,10 @@ public class TestDao {
         officeDao.setClazz(Office.class);
         Office office2 = officeDao.loadById(1);
         Assert.assertEquals(office, office2);
+
+        Set<Office> offices = organization2.getOffices();
+        Assert.assertNotNull(offices);
+        Assert.assertEquals(1, offices.size());
 
         Position position = new Position("менеджер");
         position.setId((short) 1);
@@ -99,7 +105,6 @@ public class TestDao {
         Date parsingDate = null;
         try {
             parsingDate = ft.parse("2007-05-25");
-            System.out.println(parsingDate);
         }catch (ParseException e) {
             System.out.println("Нераспаршена с помощью " + ft);
         }
@@ -108,25 +113,100 @@ public class TestDao {
         DocumentData documentData2 = employee2.getDocumentData();
         Assert.assertEquals(documentData, documentData2);
 
+        Set<Employee> employees = office2.getEmployees();
+        Assert.assertNotNull(employees);
+        Assert.assertEquals(1, employees.size());
+
     }
 
     /**
-     * Тест метода сохранения сущностей
+     * Тест методов сохранения и изменения сущностей
      */
     @Test
-    public void testSave() {
+    public void testSaveUpdateLoadByParameters() {
         Organization organization = new Organization("Новая", "Новая Организация", "0123456700",
                 "123456780", null, "г. Саратов", true);
-        organization.setId(1);
         organizationDao.setClazz(Organization.class);
         organizationDao.save(organization);
         organization.setId(3);
         Organization organization2 = organizationDao.loadById(3);
         Assert.assertEquals(organization, organization2);
 
+        Organization orgParam = new Organization();
+        orgParam.setName("Новая");
+        List<Organization> organizations = organizationDao.loadByParametersList(orgParam);
+        Assert.assertNotNull(organizations);
+        Assert.assertEquals(1, organizations.size());
+
         organization.setPhone("322-2233");
         organizationDao.update(organization);
         organization2 = organizationDao.loadById(3);
         Assert.assertEquals(organization, organization2);
+
+        Office office = new Office("Новый офис", null, "г. Саратов",
+                true, organization);
+        officeDao.setClazz(Office.class);
+        officeDao.save(office);
+        office.setId(3);
+        Office office2 = officeDao.loadById(3);
+        Assert.assertEquals(office, office2);
+
+        office.setName("new");
+        officeDao.update(office);
+        office2 = officeDao.loadById(3);
+        Assert.assertEquals(office, office2);
+
+        Position position = new Position("продавец");
+        Country country = new Country("643", "Российская Федерация");
+        Document document = new Document("21", "Паспорт гражданина Российской Федерации");
+        Employee employee = new Employee("Екатерина", null, null, "Иванова", null,
+                null, position, country, office, null);
+
+        employeeDao.setClazz(Employee.class);
+        employeeDao.save(employee);
+        position.setId((short) 2);
+        country.setId((short) 1);
+        document.setId((byte) 1);
+        employee.setId(3);
+        Employee employee2 = employeeDao.loadById(3);
+        Assert.assertEquals(employee, employee2);
+
+        Employee emplParam = new Employee();
+        emplParam.setOffice(office);
+        emplParam.setPosition(position);
+        List<Employee> employees = employeeDao.loadByParametersList(emplParam);
+        Assert.assertNotNull(employees);
+        Assert.assertEquals(1, employees.size());
+
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
+        Date parsingDate = null;
+        try {
+            parsingDate = ft.parse("2015-11-25");
+        }catch (ParseException e) {
+            System.out.println("Нераспаршена с помощью " + ft);
+        }
+        DocumentData documentData = new DocumentData(document, "6305 454552", parsingDate, employee);
+        employee2.setDocumentData(documentData);
+        documentData.setId(3);
+        employee.setDocumentData(documentData);
+        Assert.assertEquals(employee.getDocumentData(), employee2.getDocumentData());
+
     }
+
+    /**
+     * Тест методов получения списков справочников
+     */
+    @Test
+    public void testCatalogs() {
+        countryDao.setClazz(Country.class);
+        List<Country> countries = countryDao.all();
+        Assert.assertNotNull(countries);
+        Assert.assertEquals(1, countries.size());
+
+        documentDao.setClazz(Document.class);
+        List<Document> documents = documentDao.all();
+        Assert.assertNotNull(documents);
+        Assert.assertEquals(1, documents.size());
+    }
+
 }

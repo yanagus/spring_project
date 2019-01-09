@@ -31,7 +31,8 @@ public class EmployeeViewRequest {
     /**
      * Имя
      */
-    @Size(max = 50, message = "длина имени не должна превышать 50 символов", groups = {Views.FilteredList.class, Views.UpdateView.class, Views.SaveView.class})
+    @Size(max = 50, message = "длина имени не должна превышать 50 символов", groups = {Views.FilteredList.class,
+            Views.UpdateView.class, Views.SaveView.class})
     @NotEmpty(message = "введите имя работника", groups = {Views.UpdateView.class, Views.SaveView.class})
     private String firstName;
 
@@ -39,13 +40,15 @@ public class EmployeeViewRequest {
      * Второе имя
      */
     @Null(message = "второе имя должно быть не задано", groups = {Views.FilteredList.class})
-    @Size(max = 50, message = "длина второго имени не должна превышать 50 символов", groups = {Views.UpdateView.class, Views.SaveView.class})
+    @Size(max = 50, message = "длина второго имени не должна превышать 50 символов",
+            groups = {Views.UpdateView.class, Views.SaveView.class})
     private String secondName;
 
     /**
      * Среднее имя
      */
-    @Size(max = 50, message = "длина среднего имени не должна превышать 50 символов", groups = {Views.FilteredList.class, Views.UpdateView.class, Views.SaveView.class})
+    @Size(max = 50, message = "длина среднего имени не должна превышать 50 символов",
+            groups = {Views.FilteredList.class, Views.UpdateView.class, Views.SaveView.class})
     private String middleName;
 
     /**
@@ -58,7 +61,8 @@ public class EmployeeViewRequest {
     /**
      * Должность
      */
-    @Size(max = 50, message = "длина должности не должна превышать 50 символов", groups = {Views.FilteredList.class, Views.UpdateView.class, Views.SaveView.class})
+    @Size(max = 50, message = "длина должности не должна превышать 50 символов",
+            groups = {Views.FilteredList.class, Views.UpdateView.class, Views.SaveView.class})
     @NotEmpty(message = "введите должность работника", groups = {Views.UpdateView.class, Views.SaveView.class})
     private String position;
 
@@ -73,21 +77,24 @@ public class EmployeeViewRequest {
      * Цифровой код документа
      */
     @Null(message = "код документа должен быть не задан", groups = {Views.UpdateView.class})
-    @Size(max = 2, message = "длина кода документа должна быть 2 цифры", groups = {Views.FilteredList.class, Views.SaveView.class})
+    @Size(max = 2, message = "длина кода документа должна быть 2 цифры",
+            groups = {Views.FilteredList.class, Views.SaveView.class})
     private String docCode;
 
     /**
      * Номер документа
      */
-    @Null(message = "номер документа должно быть не задано", groups = {Views.FilteredList.class})
-    @Size(max = 30, message = "длина номера документа не должна превышать 30 символов", groups = {Views.UpdateView.class, Views.SaveView.class})
+    @Null(message = "номер документа должен быть не задан", groups = {Views.FilteredList.class})
+    @Size(max = 30, message = "длина номера документа не должна превышать 30 символов",
+            groups = {Views.UpdateView.class, Views.SaveView.class})
     private String docNumber;
 
     /**
      * Название документа
      */
-    @Null(message = "название документа должен быть не задан", groups = {Views.FilteredList.class})
-    @Size(max = 50, message = "длина названия документа не должна превышать 50 символов", groups = {Views.UpdateView.class, Views.SaveView.class})
+    @Null(message = "название документа должно быть не задано", groups = {Views.FilteredList.class})
+    @Size(max = 50, message = "длина названия документа не должна превышать 50 символов",
+            groups = {Views.UpdateView.class, Views.SaveView.class})
     private String docName;
 
     /**
@@ -99,7 +106,8 @@ public class EmployeeViewRequest {
     /**
      * Цифровой код страны
      */
-    @Size(max = 3, message = "длина кода страны должна быть 3 цифры", groups = {Views.FilteredList.class, Views.UpdateView.class, Views.SaveView.class})
+    @Size(max = 3, message = "длина кода страны должна быть 3 цифры",
+            groups = {Views.FilteredList.class, Views.UpdateView.class, Views.SaveView.class})
     private String citizenshipCode;
 
     /**

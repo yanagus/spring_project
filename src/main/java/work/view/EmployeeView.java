@@ -12,8 +12,8 @@ import java.util.Objects;
 /**
  * Класс работника для сериализации в JSON
  */
-@JsonPropertyOrder({"id", "firstName", "secondName", "middleName", "lastName", "position", "phone", "docName", "docNumber",
-"docDate", "citizenshipName", "citizenshipCode", "isIdentified"})
+@JsonPropertyOrder({"id", "firstName", "secondName", "middleName", "lastName", "position", "phone", "docName",
+        "docNumber", "docDate", "citizenshipName", "citizenshipCode", "isIdentified"})
 public class EmployeeView {
 
     /**
@@ -81,8 +81,9 @@ public class EmployeeView {
     public EmployeeView() {
     }
 
-    public EmployeeView(String id, String firstName, String secondName, String middleName, String lastName, String phone,
-                        String isIdentified, PositionView position, CountryView country, OfficeView office, DocumentDataView documentData) {
+    public EmployeeView(String id, String firstName, String secondName, String middleName, String lastName,
+                        String phone, String isIdentified, PositionView position, CountryView country,
+                        OfficeView office, DocumentDataView documentData) {
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
@@ -98,11 +99,13 @@ public class EmployeeView {
 
     /**
      * Конструктор для преобразования из класса для десериализации
+     *
      * @param employeeRequest класс для десериализации
      */
     public EmployeeView(EmployeeViewRequest employeeRequest) {
-        this(employeeRequest.getId(), employeeRequest.getFirstName(), employeeRequest.getSecondName(), employeeRequest.getMiddleName(),
-                employeeRequest.getLastName(), employeeRequest.getPhone(), employeeRequest.getIsIdentified(), null, null, null, null);
+        this(employeeRequest.getId(), employeeRequest.getFirstName(), employeeRequest.getSecondName(),
+                employeeRequest.getMiddleName(), employeeRequest.getLastName(), employeeRequest.getPhone(),
+                employeeRequest.getIsIdentified(), null, null, null, null);
     }
 
     public String getId() {

@@ -60,7 +60,8 @@ public class OfficeView {
     public OfficeView() {
     }
 
-    public OfficeView(String id, String name, String phone, String address, String isActive, OrganizationView organization, Set<EmployeeView> employees) {
+    public OfficeView(String id, String name, String phone, String address, String isActive,
+                      OrganizationView organization, Set<EmployeeView> employees) {
         this.id = id;
         this.name = name;
         this.phone = phone;
@@ -72,11 +73,12 @@ public class OfficeView {
 
     /**
      * Конструктор для преобразования из класса для десериализации
+     *
      * @param officeRequest класс для десериализации из JSON
      */
     public OfficeView(OfficeViewRequest officeRequest) {
-        this(officeRequest.getId(), officeRequest.getName(), officeRequest.getPhone(), officeRequest.getAddress(), officeRequest.getIsActive(),
-                null, Collections.emptySet());
+        this(officeRequest.getId(), officeRequest.getName(), officeRequest.getPhone(), officeRequest.getAddress(),
+                officeRequest.getIsActive(), null, Collections.emptySet());
     }
 
     public String getId() {

@@ -99,4 +99,12 @@ public class Document implements Serializable {
         return Objects.hash(id, code, name);
     }
 
+    @Override
+    public String toString() {
+        return "Document{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

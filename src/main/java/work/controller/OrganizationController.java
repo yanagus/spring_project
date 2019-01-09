@@ -1,4 +1,4 @@
-package work.controller.organization;
+package work.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import work.controller.EntityAlreadyExistException;
-import work.controller.EntityNotFoundException;
 import work.service.IService;
 import work.view.OrganizationView;
 import work.view.ResponseView;
@@ -75,12 +73,6 @@ public class OrganizationController {
         OrganizationView organizationView = new OrganizationView(organization);
         organizationService.update(organizationView);
         return new ResponseView("success");
-    }
-
-    // для тестирования - получить все организации
-    @RequestMapping(value = "/list/all", method = RequestMethod.GET)
-    public List<OrganizationView> organizations() {
-        return organizationService.findAll();
     }
 
     /**

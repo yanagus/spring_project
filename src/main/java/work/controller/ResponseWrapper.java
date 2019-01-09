@@ -116,7 +116,8 @@ class Wrapper<T> {
     /**
      * Обёртка для данных
      */
-    @JsonView({Views.GetByIdView.class, Views.SaveView.class, Views.ListView.class, Views.UpdateView.class, Views.FilteredList.class})
+    @JsonView({Views.GetByIdView.class, Views.SaveView.class, Views.ListView.class, Views.UpdateView.class,
+            Views.FilteredList.class})
     private T data;
 
     /**

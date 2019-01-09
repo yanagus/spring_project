@@ -24,7 +24,7 @@ public class Position implements Serializable{
     private Short id;
 
     /**
-     * Служебное поле hibernate
+     * Служебное поле Hibernate
      */
     @Version
     private Integer version;
@@ -44,6 +44,7 @@ public class Position implements Serializable{
 
     /**
      * Конструктор
+     *
      * @param name название должности
      */
     public Position(String name) {

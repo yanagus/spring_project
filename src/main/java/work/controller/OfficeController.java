@@ -1,4 +1,4 @@
-package work.controller.office;
+package work.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.PathVariable;
-import work.controller.EntityNotFoundException;
-import work.controller.organization.OrganizationController;
 import work.service.IService;
 import work.view.OfficeView;
 import work.view.OrganizationView;
@@ -36,7 +34,8 @@ public class OfficeController {
 
 
     @Autowired
-    public OfficeController(IService<OfficeView, Integer> officeService, IService<OrganizationView, Integer> organizationService) {
+    public OfficeController(IService<OfficeView, Integer> officeService,
+                            IService<OrganizationView, Integer> organizationService) {
         this.officeService = officeService;
         this.organizationService = organizationService;
     }
@@ -48,7 +47,8 @@ public class OfficeController {
      * @return экземпляр типа ResponseView с сообщением об успешном сохранении нового офиса
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public @ResponseStatus(HttpStatus.CREATED) ResponseView saveOffice(@Validated(Views.SaveView.class) @RequestBody OfficeViewRequest office) {
+    public @ResponseStatus(HttpStatus.CREATED) ResponseView saveOffice(
+            @Validated(Views.SaveView.class) @RequestBody OfficeViewRequest office) {
         OfficeView officeView = new OfficeView(office);
         if (office.getOrgId() != null) {
             officeView.setOrganization(checkOrganization(office.getOrgId()));
@@ -61,7 +61,7 @@ public class OfficeController {
      * Обновить данные офиса
      *
      * @param office обновлённые данные
-     * @return экземпляр типа ResponseView с сообщением об успешном обновлении текущей организации
+     * @return экземпляр типа ResponseView с сообщением об успешном обновлении текущего офиса
      */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public ResponseView updateOffice(@Validated(Views.UpdateView.class) @RequestBody OfficeViewRequest office) {
@@ -72,12 +72,6 @@ public class OfficeController {
         }
         officeService.update(officeView);
         return new ResponseView("success");
-    }
-
-    // для тестирования - получить все офисы
-    @RequestMapping(value = "/list/all", method = RequestMethod.GET)
-    public List<OfficeView> offices() {
-        return officeService.findAll();
     }
 
     /**
@@ -103,7 +97,7 @@ public class OfficeController {
      * Найти офис по уникальному идентификатору id
      *
      * @param officeIdentifier id офиса
-     * @return OfficeView
+     * @return OfficeView офис
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @JsonView(Views.GetByIdView.class)

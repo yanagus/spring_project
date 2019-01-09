@@ -25,12 +25,21 @@ import work.view.CountryView;
 import work.view.EmployeeView;
 import work.view.PositionView;
 import work.view.ResponseView;
+import work.view.inputView.EmployeeViewRequest;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Тест контроллера работника
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {Application.class})
 @WebAppConfiguration(value = "src/main/resources")
@@ -43,11 +52,19 @@ public class TestEmployeeController {
 
     private RestTemplate restTemplate;
 
+    /**
+     * Инициализировать MockMvc до выполнения тестов
+     */
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
+    /**
+     * Проверка валидации JSON
+     *
+     * @throws Exception
+     */
     @Test
     public void validateEmployeeById() throws Exception {
         String employee1 = "{\"data\":{\"id\":\"1\",\"firstName\":\"Иван\",\"secondName\":null,\"middleName\":null," +
@@ -68,6 +85,9 @@ public class TestEmployeeController {
                 .andExpect(jsonPath("$.error").value("работник с id 3 не найден"));
     }
 
+    /**
+     * Получить работника по id
+     */
     @Test
     public void testEmployeeById() {
         restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
@@ -87,6 +107,9 @@ public class TestEmployeeController {
         Assert.assertTrue(headers.getContentType().includes(MediaType.APPLICATION_JSON));
     }
 
+    /**
+     * Получить ответ при неверно введенном id работника
+     */
     @Test(expected = HttpClientErrorException.class)
     public void testEmployeeBadId() {
         restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
@@ -101,12 +124,18 @@ public class TestEmployeeController {
         Assert.assertEquals(error2, error);
     }
 
+    /**
+     * Сохранить нового работника и получить его
+     */
     @Test
-    public void testPostNewEmployeeAndGet() {
+    public void testPostAndGetNewEmployee() {
         restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
-        EmployeeView employee = new EmployeeView(null, "Екатерина", null, null, null, "322-223", "true",
-                new PositionView("продавец"), null, null, null);
-        HttpEntity<EmployeeView> entity = new HttpEntity<>(employee);
+        EmployeeViewRequest employee = new EmployeeViewRequest();
+        employee.setFirstName("Екатерина");
+        employee.setPosition("продавец");
+        employee.setPhone("322-223");
+        employee.setIsIdentified("true");
+        HttpEntity<EmployeeViewRequest> entity = new HttpEntity<>(employee);
         ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/user/save", HttpMethod.POST,
                 entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
         Wrapper<ResponseView> wrapper = responseEntity.getBody();
@@ -115,7 +144,126 @@ public class TestEmployeeController {
 
         ResponseEntity<Wrapper<EmployeeView>> responseEntityId3 = restTemplate.exchange("/api/user/3", HttpMethod.GET,
                 entity, new ParameterizedTypeReference<Wrapper<EmployeeView>>() {});
-        employee.setId("3");
-        Assert.assertEquals(employee, responseEntityId3.getBody().getData());
+        EmployeeView employeeResponse = new EmployeeView("3", "Екатерина", null, null, null, "322-223", "true",
+                new PositionView("продавец"), null, null, null);
+        Assert.assertEquals(employeeResponse, responseEntityId3.getBody().getData());
+    }
+
+    /**
+     * Получить ответ обработчика ошибок при неверных входных данных работника
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void testPostNewNotValidEmployee() {
+        restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
+        EmployeeViewRequest employee = new EmployeeViewRequest();
+        employee.setOfficeId("2");
+        employee.setFirstName("Екатерина");
+        employee.setPosition("продавец");
+        employee.setDocCode("21");
+        employee.setDocNumber("6305 454552");
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
+        Date parsingDate = null;
+        try {
+            parsingDate = ft.parse("2007-05-25");
+        }catch (ParseException e) {
+            System.out.println("Нераспаршена с помощью " + ft);
+        }
+        employee.setDocDate(parsingDate);
+        HttpEntity<EmployeeViewRequest> entity = new HttpEntity<>(employee);
+        ResponseEntity<ErrorWrapper<ResponseMessage>> responseEntity = restTemplate.exchange("/api/office/save",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<ErrorWrapper<ResponseMessage>>() {});
+        Assert.assertEquals(400, responseEntity.getStatusCodeValue());
+        ErrorWrapper<ResponseMessage> error = responseEntity.getBody();
+        ResponseMessage responseMsg =
+                new ResponseMessage("работник с такими паспортными данными существует");
+        ErrorWrapper<ResponseMessage> error2 = new ErrorWrapper<>(responseMsg);
+        Assert.assertEquals(error2, error);
+    }
+
+    /**
+     * Обновить существующего работника
+     */
+    @Test
+    public void testUpdateEmployee() {
+        restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
+        EmployeeViewRequest employee = new EmployeeViewRequest();
+        employee.setId("1");
+        employee.setFirstName("Иван");
+        employee.setPosition("ведущий менеджер");
+        HttpEntity<EmployeeViewRequest> entity = new HttpEntity<>(employee);
+        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/user/update", HttpMethod.POST,
+                entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
+        Wrapper<ResponseView> wrapper = responseEntity.getBody();
+        Assert.assertEquals(new ResponseView("success"), wrapper.getData());
+        Assert.assertEquals(200, responseEntity.getStatusCodeValue());
+
+        ResponseEntity<Wrapper<EmployeeView>> responseChangedEntity = restTemplate.exchange("/api/user/1", HttpMethod.GET,
+                entity, new ParameterizedTypeReference<Wrapper<EmployeeView>>() {});
+        Wrapper<EmployeeView> responseWrapper = responseChangedEntity.getBody();
+        EmployeeView employeeResponse = new EmployeeView("1", "Иван", null, null,
+                null, "+7(927)111-11-11", null,
+                new PositionView("ведущий менеджер"), null, null, null);
+        Assert.assertEquals(employeeResponse, responseWrapper.getData());
+    }
+
+    /**
+     * Получить ответ обработчика ошибок при неверных входных данных работника
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void testNotValidUpdateEmployee() {
+        restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
+        EmployeeViewRequest employee = new EmployeeViewRequest();
+        employee.setOfficeId("2");
+        employee.setId("1");
+        employee.setFirstName("Иван");
+        employee.setPosition("ведущий менеджер");
+        employee.setDocName("Паспорт гражданина Российской Федерации");
+        employee.setDocNumber("6305 454356");
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
+        Date parsingDate = null;
+        try {
+            parsingDate = ft.parse("2007-05-25");
+        }catch (ParseException e) {
+            System.out.println("Нераспаршена с помощью " + ft);
+        }
+        employee.setDocDate(parsingDate);
+        HttpEntity<EmployeeViewRequest> entity = new HttpEntity<>(employee);
+        ResponseEntity<ErrorWrapper<ResponseMessage>> responseEntity = restTemplate.exchange("/api/office/update",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<ErrorWrapper<ResponseMessage>>() {});
+        Assert.assertEquals(400, responseEntity.getStatusCodeValue());
+        ErrorWrapper<ResponseMessage> error = responseEntity.getBody();
+        ResponseMessage responseMsg =
+                new ResponseMessage("работник с такими паспортными данными существует, его id = 2");
+        ErrorWrapper<ResponseMessage> error2 = new ErrorWrapper<>(responseMsg);
+        Assert.assertEquals(error2, error);
+    }
+
+    /**
+     * Получить список работников по фильтру
+     */
+    @Test
+    public void testOfficeList() {
+        restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
+        EmployeeViewRequest employee = new EmployeeViewRequest();
+        employee.setOfficeId("1");
+        HttpEntity<EmployeeViewRequest> entity = new HttpEntity<>(employee);
+        ResponseEntity<Wrapper<List<EmployeeView>>> responseEntity = restTemplate.exchange("/api/user/list", HttpMethod.POST,
+                entity, new ParameterizedTypeReference<Wrapper<List<EmployeeView>>>() {});
+        Wrapper<List<EmployeeView>> wrapper = responseEntity.getBody();
+
+        EmployeeView employeeView = new EmployeeView("1", "Иван", null, null,
+                null, null, null,
+                new PositionView("менеджер"), null, null, null);
+
+        Assert.assertEquals(1, wrapper.getData().size());
+        Assert.assertEquals(employeeView, wrapper.getData().get(0));
+        Assert.assertEquals(200, responseEntity.getStatusCodeValue());
+
+        employee.setPosition("продавец");
+        responseEntity = restTemplate.exchange("/api/user/list", HttpMethod.POST,
+                entity, new ParameterizedTypeReference<Wrapper<List<EmployeeView>>>() {});
+        wrapper = responseEntity.getBody();
+
+        Assert.assertEquals(0, wrapper.getData().size());
     }
 }

@@ -29,21 +29,24 @@ public class OfficeViewRequest {
     /**
      * Название офиса
      */
-    @Size(max = 50, message = "длина названия не должна превышать 50 символов", groups = {Views.SaveView.class, Views.FilteredList.class, Views.UpdateView.class})
+    @Size(max = 50, message = "длина названия не должна превышать 50 символов",
+            groups = {Views.SaveView.class, Views.FilteredList.class, Views.UpdateView.class})
     @NotEmpty(message = "введите название офиса", groups = {Views.SaveView.class, Views.UpdateView.class})
     private String name;
 
     /**
      * Телефон
      */
-    @Size(max = 25, message = "длина телефона не должна превышать 25 символов", groups = {Views.SaveView.class, Views.FilteredList.class, Views.UpdateView.class})
+    @Size(max = 25, message = "длина телефона не должна превышать 25 символов",
+            groups = {Views.SaveView.class, Views.FilteredList.class, Views.UpdateView.class})
     private String phone;
 
     /**
      * Адрес
      */
     @Null(message = "адрес должен быть не задан", groups = {Views.FilteredList.class})
-    @Size(max = 100, message = "длина адреса не должна превышать 100 символов", groups = {Views.SaveView.class, Views.UpdateView.class})
+    @Size(max = 100, message = "длина адреса не должна превышать 100 символов",
+            groups = {Views.SaveView.class, Views.UpdateView.class})
     @NotEmpty(message = "введите адрес организации", groups = {Views.UpdateView.class})
     private String address;
 

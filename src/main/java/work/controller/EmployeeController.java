@@ -1,12 +1,15 @@
-package work.controller.employee;
+package work.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import work.controller.EntityAlreadyExistException;
-import work.controller.EntityNotFoundException;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.PathVariable;
 import work.service.IService;
 import work.view.EmployeeView;
 import work.view.OfficeView;
@@ -41,7 +44,8 @@ public class EmployeeController {
      * @param officeService сервис офиса
      */
     @Autowired
-    public EmployeeController(IService<EmployeeView, Integer> employeeService, IService<OfficeView, Integer> officeService) {
+    public EmployeeController(IService<EmployeeView, Integer> employeeService,
+                              IService<OfficeView, Integer> officeService) {
         this.employeeService = employeeService;
         this.officeService = officeService;
     }
@@ -64,25 +68,12 @@ public class EmployeeController {
         EmployeeView employeeView = new EmployeeView(employee);
 
         if (employee.getOfficeId() != null) {
-            OfficeView officeView = checkOffice(employee.getOfficeId());
-            employeeView.setOffice(officeView);
+            employeeView.setOffice(checkOffice(employee.getOfficeId()));
         }
 
-        PositionView position = new PositionView(employee.getPosition());
-        employeeView.setPosition(position);
-
-        if (employee.getDocCode() != null || employee.getDocName() != null) {
-            DocumentView documentView = new DocumentView(employee.getDocCode(), employee.getDocName());
-            if (employee.getDocNumber() != null) {
-                DocumentDataView documentDataView = new DocumentDataView(documentView, employee.getDocNumber(), employee.getDocDate(), employeeView);
-                employeeView.setDocumentData(documentDataView);
-            }
-        }
-
-        if (employee.getCitizenshipCode() != null) {
-            CountryView countryView = new CountryView(employee.getCitizenshipCode());
-            employeeView.setCountry(countryView);
-        }
+        setPosition(employee, employeeView);
+        checkAndSetDocumentData(employee, employeeView);
+        checkAndSetCitizenshipCode(employee, employeeView);
 
         employeeService.add(employeeView);
         return new ResponseView("success");
@@ -108,34 +99,15 @@ public class EmployeeController {
         EmployeeView employeeView = new EmployeeView(employee);
 
         if (employee.getOfficeId() != null) {
-            OfficeView officeView = checkOffice(employee.getOfficeId());
-            employeeView.setOffice(officeView);
+            employeeView.setOffice(checkOffice(employee.getOfficeId()));
         }
 
-        PositionView position = new PositionView(employee.getPosition());
-        employeeView.setPosition(position);
-
-        if (employee.getDocName() != null) {
-            DocumentView documentView = new DocumentView(null, employee.getDocName());
-            if (employee.getDocNumber() != null) {
-                DocumentDataView documentDataView = new DocumentDataView(documentView, employee.getDocNumber(), employee.getDocDate(), employeeView);
-                employeeView.setDocumentData(documentDataView);
-            }
-        }
-
-        if (employee.getCitizenshipCode() != null) {
-            CountryView countryView = new CountryView(employee.getCitizenshipCode());
-            employeeView.setCountry(countryView);
-        }
+        setPosition(employee, employeeView);
+        checkAndSetDocumentData(employee, employeeView);
+        checkAndSetCitizenshipCode(employee, employeeView);
 
         employeeService.update(employeeView);
         return new ResponseView("success");
-    }
-
-    // для тестирования - получить все офисы
-    @RequestMapping(value = "/list/all", method = RequestMethod.GET)
-    public List<EmployeeView> employees() {
-        return employeeService.findAll();
     }
 
     /**
@@ -156,8 +128,7 @@ public class EmployeeController {
         employeeView.setOffice(officeView);
 
         if (employee.getPosition() != null) {
-            PositionView position = new PositionView(employee.getPosition());
-            employeeView.setPosition(position);
+            setPosition(employee, employeeView);
         }
 
         if (employee.getDocCode() != null) {
@@ -166,10 +137,7 @@ public class EmployeeController {
             employeeView.setDocumentData(documentDataView);
         }
 
-        if (employee.getCitizenshipCode() != null) {
-            CountryView countryView = new CountryView(employee.getCitizenshipCode());
-            employeeView.setCountry(countryView);
-        }
+        checkAndSetCitizenshipCode(employee, employeeView);
 
         return employeeService.findByParametersList(employeeView);
     }
@@ -194,7 +162,7 @@ public class EmployeeController {
         return employeeView;
     }
 
-    private OfficeView checkOffice (String officeId) {
+    private OfficeView checkOffice(String officeId) {
         if (!officeId.matches("[\\d]+")) {
             throw new EntityNotFoundException("офис с id " + officeId + " не найден");
         }
@@ -204,5 +172,25 @@ public class EmployeeController {
             throw new EntityNotFoundException("офис с id " + id + " не найден");
         }
         return officeView;
+    }
+
+    private void setPosition(EmployeeViewRequest employee, EmployeeView employeeView) {
+        employeeView.setPosition(new PositionView(employee.getPosition()));
+    }
+
+    private void checkAndSetDocumentData(EmployeeViewRequest employee, EmployeeView employeeView) {
+        if (employee.getDocCode() != null || employee.getDocName() != null) {
+            DocumentView documentView = new DocumentView(employee.getDocCode(), employee.getDocName());
+            if (employee.getDocNumber() != null) {
+                DocumentDataView documentDataView = new DocumentDataView(documentView, employee.getDocNumber(), employee.getDocDate(), employeeView);
+                employeeView.setDocumentData(documentDataView);
+            }
+        }
+    }
+
+    private void checkAndSetCitizenshipCode(EmployeeViewRequest employee, EmployeeView employeeView) {
+        if (employee.getCitizenshipCode() != null) {
+            employeeView.setCountry(new CountryView(employee.getCitizenshipCode()));
+        }
     }
 }

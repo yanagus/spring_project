@@ -73,7 +73,8 @@ public class OrganizationView {
     public OrganizationView() {
     }
 
-    public OrganizationView(String id, String name, String fullName, String inn, String kpp, String address, String phone, String isActive, Set<OfficeView> offices) {
+    public OrganizationView(String id, String name, String fullName, String inn, String kpp, String address,
+                            String phone, String isActive, Set<OfficeView> offices) {
         this.id = id;
         this.name = name;
         this.fullName = fullName;
@@ -87,7 +88,8 @@ public class OrganizationView {
 
     /**
      * Конструктор для преобразования из класса для десериализации
-     * @param orgRequest
+     *
+     * @param orgRequest экземпляр класса для десериализации из JSON
      */
     public OrganizationView(OrganizationViewRequest orgRequest) {
         this(orgRequest.getId(), orgRequest.getName(), orgRequest.getFullName(), orgRequest.getInn(), orgRequest.getKpp(),
