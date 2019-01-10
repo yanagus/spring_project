@@ -49,29 +49,12 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Integer> {
     @Override
     public void save(Employee entity) {
 
-        Employee newEmployee = new Employee(entity.getFirstName(), entity.getSecondName(), entity.getMiddleName(), entity.getLastName(),
-                entity.getPhone(), entity.getIsIdentified(), null, null, null, null);
-
-        if (entity.getOffice() != null) {
-            newEmployee.setOffice(entityManager.find(Office.class, entity.getOffice().getId()));
-        }
-
-        Position position = loadByPositionName(entity.getPosition().getName());
-        if (position == null) {
-            position = new Position(entity.getPosition().getName());
-            entityManager.persist(position);
-        }
-        newEmployee.setPosition(position);
-
-        if (entity.getCountry() != null) {
-            Country country = loadByCitizenshipCode(entity.getCountry().getCode());
-            if (country == null) {
-                country = new Country(entity.getCountry().getCode(), entity.getCountry().getName());
-                entityManager.persist(country);
-            }
-            newEmployee.setCountry(country);
-        }
-
+        Employee newEmployee = new Employee(entity.getFirstName(), entity.getSecondName(), entity.getMiddleName(),
+                entity.getLastName(), entity.getPhone(), entity.getIsIdentified(),
+                null, null, null, null);
+        setOffice(entity, newEmployee);
+        setPosition(entity, newEmployee);
+        setCountry(entity, newEmployee);
         entityManager.persist(newEmployee);
 
         if (entity.getDocumentData() != null) {
@@ -79,11 +62,13 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Integer> {
                 if (entity.getDocumentData().getDocument().getCode() != null) {
                     Document document = loadByDocCode(entity.getDocumentData().getDocument().getCode());
                     if (document == null) {
-                        document = new Document(entity.getDocumentData().getDocument().getCode(), entity.getDocumentData().getDocument().getName());
+                        document = new Document(entity.getDocumentData().getDocument().getCode(),
+                                entity.getDocumentData().getDocument().getName());
                         entityManager.persist(document);
                     }
                     if (entity.getDocumentData().getNumber() != null) {
-                        DocumentData documentData = new DocumentData(document, entity.getDocumentData().getNumber(), entity.getDocumentData().getDate(), newEmployee);
+                        DocumentData documentData = new DocumentData(document, entity.getDocumentData().getNumber(),
+                                entity.getDocumentData().getDate(), newEmployee);
                         entityManager.persist(documentData);
                     }
                 }
@@ -101,40 +86,19 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Integer> {
     public void update(Employee entity) {
         Employee employee = entityManager.find(Employee.class, entity.getId());
 
-        if (entity.getOffice() != null) {
-            employee.setOffice(entityManager.find(Office.class, entity.getOffice().getId()));
-        }
-
+        setOffice(entity, employee);
         employee.setFirstName(entity.getFirstName());
-
         if (entity.getSecondName() != null) {
             employee.setSecondName(entity.getSecondName());
         }
         if (entity.getMiddleName() != null) {
             employee.setMiddleName(entity.getMiddleName());
         }
-
-        Position position = loadByPositionName(entity.getPosition().getName());
-        if (position == null) {
-            position = new Position(entity.getPosition().getName());
-            entityManager.persist(position);
-        }
-        employee.setPosition(position);
-
+        setPosition(entity, employee);
         if (entity.getPhone() != null) {
             employee.setPhone(entity.getPhone());
         }
-
-
-        if (entity.getCountry() != null) {
-            Country country = loadByCitizenshipCode(entity.getCountry().getCode());
-            if (country == null) {
-                country = new Country(entity.getCountry().getCode(), entity.getCountry().getName());
-                entityManager.persist(country);
-            }
-            employee.setCountry(country);
-        }
-
+        setCountry(entity, employee);
         if (entity.getIsIdentified() != null) {
             employee.setIsIdentified(entity.getIsIdentified());
         }
@@ -154,13 +118,13 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Integer> {
             }
         }
 
-
         if (entity.getDocumentData() != null && employee.getDocumentData() == null) {
             if (entity.getDocumentData().getDocument() != null) {
                 if (entity.getDocumentData().getDocument().getName() != null) {
                     Document document = loadByDocName(entity.getDocumentData().getDocument().getName());
                     if (document != null && entity.getDocumentData().getNumber() != null) {
-                        DocumentData documentData = new DocumentData(document, entity.getDocumentData().getNumber(), entity.getDocumentData().getDate(), employee);
+                        DocumentData documentData = new DocumentData(document, entity.getDocumentData().getNumber(),
+                                entity.getDocumentData().getDate(), employee);
                         entityManager.persist(documentData);
                     }
                 }
@@ -210,8 +174,10 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Integer> {
         List<Employee> filtered = new ArrayList<>();
         if (entity.getDocumentData() != null && entity.getDocumentData().getDocument() != null) {
             filtered = employeeList.stream()
-                    .filter(employee -> ((employee.getDocumentData()!= null) && (employee.getDocumentData().getDocument() != null)))
-                    .filter(employee -> employee.getDocumentData().getDocument().getCode().equals(entity.getDocumentData().getDocument().getCode()))
+                    .filter(employee -> ((employee.getDocumentData()!= null) &&
+                            (employee.getDocumentData().getDocument() != null)))
+                    .filter(employee -> employee.getDocumentData().getDocument()
+                            .getCode().equals(entity.getDocumentData().getDocument().getCode()))
                     .collect(Collectors.toList());
         }
 
@@ -271,6 +237,31 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Integer> {
         return criteria;
     }
 
+    private void setOffice(Employee entity, Employee employee) {
+        if (entity.getOffice() != null) {
+            employee.setOffice(entityManager.find(Office.class, entity.getOffice().getId()));
+        }
+    }
+
+    private void setPosition(Employee entity, Employee employee) {
+        Position position = loadByPositionName(entity.getPosition().getName());
+        if (position == null) {
+            position = new Position(entity.getPosition().getName());
+            entityManager.persist(position);
+        }
+        employee.setPosition(position);
+    }
+
+    private void setCountry(Employee entity, Employee employee) {
+        if (entity.getCountry() != null) {
+            Country country = loadByCitizenshipCode(entity.getCountry().getCode());
+            if (country == null) {
+                country = new Country(entity.getCountry().getCode(), entity.getCountry().getName());
+                entityManager.persist(country);
+            }
+            employee.setCountry(country);
+        }
+    }
 
     private Position loadByPositionName(String positionName) {
         CriteriaQuery<Position> criteria = buildPositionCriteria(positionName);
@@ -289,7 +280,6 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Integer> {
         criteria.where(builder.equal(builder.lower(position.get("name")), name.toLowerCase()));
         return criteria;
     }
-
 
 
     private Document loadByDocCode(String docCode) {
@@ -311,7 +301,6 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Integer> {
     }
 
 
-
     private Document loadByDocName(String docName) {
         CriteriaQuery<Document> criteria = buildDocumentNameCriteria(docName);
         TypedQuery<Document> query = entityManager.createQuery(criteria);
@@ -329,8 +318,6 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Integer> {
         criteria.where(builder.equal(document.get("name"), name));
         return criteria;
     }
-
-
 
 
     private Country loadByCitizenshipCode(String citizenshipCode) {

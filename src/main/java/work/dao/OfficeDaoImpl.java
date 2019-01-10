@@ -37,12 +37,6 @@ public class OfficeDaoImpl extends AbstractDao<Office, Integer> {
         this.entityManager = entityManager;
     }
 
-    // не нужна
-    @Override
-    public Office loadByParameter(String param) {
-        return null;
-    }
-
     /**
      * Обновить существующий офис
      *

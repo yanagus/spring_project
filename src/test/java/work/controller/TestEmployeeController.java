@@ -115,8 +115,8 @@ public class TestEmployeeController {
         restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
         HttpHeaders headers = restTemplate.headForHeaders("/api/user/4");
         HttpEntity entity = new HttpEntity(headers);
-        ResponseEntity<ErrorWrapper<ResponseMessage>> responseEntity = restTemplate.exchange("/api/user/4", HttpMethod.GET,
-                entity, new ParameterizedTypeReference<ErrorWrapper<ResponseMessage>>() {});
+        ResponseEntity<ErrorWrapper<ResponseMessage>> responseEntity = restTemplate.exchange("/api/user/4",
+                HttpMethod.GET, entity, new ParameterizedTypeReference<ErrorWrapper<ResponseMessage>>() {});
         Assert.assertEquals(404, responseEntity.getStatusCodeValue());
         ErrorWrapper<ResponseMessage> error = responseEntity.getBody();
         ResponseMessage responseMessage = new ResponseMessage("работник с id 4 не найден");
@@ -136,15 +136,16 @@ public class TestEmployeeController {
         employee.setPhone("322-223");
         employee.setIsIdentified("true");
         HttpEntity<EmployeeViewRequest> entity = new HttpEntity<>(employee);
-        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/user/save", HttpMethod.POST,
-                entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
+        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/user/save",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
         Wrapper<ResponseView> wrapper = responseEntity.getBody();
         Assert.assertEquals(new ResponseView("success"), wrapper.getData());
         Assert.assertEquals(201, responseEntity.getStatusCodeValue());
 
         ResponseEntity<Wrapper<EmployeeView>> responseEntityId3 = restTemplate.exchange("/api/user/3", HttpMethod.GET,
                 entity, new ParameterizedTypeReference<Wrapper<EmployeeView>>() {});
-        EmployeeView employeeResponse = new EmployeeView("3", "Екатерина", null, null, null, "322-223", "true",
+        EmployeeView employeeResponse = new EmployeeView("3", "Екатерина", null,
+                null, null, "322-223", "true",
                 new PositionView("продавец"), null, null, null);
         Assert.assertEquals(employeeResponse, responseEntityId3.getBody().getData());
     }
@@ -191,14 +192,14 @@ public class TestEmployeeController {
         employee.setFirstName("Иван");
         employee.setPosition("ведущий менеджер");
         HttpEntity<EmployeeViewRequest> entity = new HttpEntity<>(employee);
-        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/user/update", HttpMethod.POST,
-                entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
+        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/user/update",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
         Wrapper<ResponseView> wrapper = responseEntity.getBody();
         Assert.assertEquals(new ResponseView("success"), wrapper.getData());
         Assert.assertEquals(200, responseEntity.getStatusCodeValue());
 
-        ResponseEntity<Wrapper<EmployeeView>> responseChangedEntity = restTemplate.exchange("/api/user/1", HttpMethod.GET,
-                entity, new ParameterizedTypeReference<Wrapper<EmployeeView>>() {});
+        ResponseEntity<Wrapper<EmployeeView>> responseChangedEntity = restTemplate.exchange("/api/user/1",
+                HttpMethod.GET, entity, new ParameterizedTypeReference<Wrapper<EmployeeView>>() {});
         Wrapper<EmployeeView> responseWrapper = responseChangedEntity.getBody();
         EmployeeView employeeResponse = new EmployeeView("1", "Иван", null, null,
                 null, "+7(927)111-11-11", null,
@@ -247,8 +248,8 @@ public class TestEmployeeController {
         EmployeeViewRequest employee = new EmployeeViewRequest();
         employee.setOfficeId("1");
         HttpEntity<EmployeeViewRequest> entity = new HttpEntity<>(employee);
-        ResponseEntity<Wrapper<List<EmployeeView>>> responseEntity = restTemplate.exchange("/api/user/list", HttpMethod.POST,
-                entity, new ParameterizedTypeReference<Wrapper<List<EmployeeView>>>() {});
+        ResponseEntity<Wrapper<List<EmployeeView>>> responseEntity = restTemplate.exchange("/api/user/list",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<Wrapper<List<EmployeeView>>>() {});
         Wrapper<List<EmployeeView>> wrapper = responseEntity.getBody();
 
         EmployeeView employeeView = new EmployeeView("1", "Иван", null, null,

@@ -40,12 +40,17 @@ public abstract class AbstractDao<T extends Serializable, ID extends Number> imp
     /**
      * {@inheritDoc}
      */
-    abstract public T loadByParameter(String param);
+    public T loadByParameter(String param) {
+        return null;
+    }
+
 
     /**
      * {@inheritDoc}
      */
-    abstract public void update(T entity);
+    public void update(T entity) {
+
+    }
 
     /**
      * {@inheritDoc}

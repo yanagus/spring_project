@@ -99,8 +99,8 @@ public class TestOfficeController {
         restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
         HttpHeaders headers = restTemplate.headForHeaders("/api/office/bb");
         HttpEntity entity = new HttpEntity(headers);
-        ResponseEntity<ErrorWrapper<ResponseMessage>> responseEntity = restTemplate.exchange("/api/office/bb", HttpMethod.GET,
-                entity, new ParameterizedTypeReference<ErrorWrapper<ResponseMessage>>() {});
+        ResponseEntity<ErrorWrapper<ResponseMessage>> responseEntity = restTemplate.exchange("/api/office/bb",
+                HttpMethod.GET, entity, new ParameterizedTypeReference<ErrorWrapper<ResponseMessage>>() {});
         Assert.assertEquals(404, responseEntity.getStatusCodeValue());
         ErrorWrapper<ResponseMessage> error = responseEntity.getBody();
         ResponseMessage responseMessage = new ResponseMessage("офис с id bb не найден");
@@ -119,14 +119,14 @@ public class TestOfficeController {
         office.setAddress("Самара");
         office.setIsActive("TRUE");
         HttpEntity<OfficeViewRequest> entity = new HttpEntity<>(office);
-        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/office/save", HttpMethod.POST,
-                entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
+        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/office/save",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
         Wrapper<ResponseView> wrapper = responseEntity.getBody();
         Assert.assertEquals(new ResponseView("success"), wrapper.getData());
         Assert.assertEquals(201, responseEntity.getStatusCodeValue());
 
-        ResponseEntity<Wrapper<OfficeView>> responseEntityId3 = restTemplate.exchange("/api/office/3", HttpMethod.GET,
-                entity, new ParameterizedTypeReference<Wrapper<OfficeView>>() {});
+        ResponseEntity<Wrapper<OfficeView>> responseEntityId3 = restTemplate.exchange("/api/office/3",
+                HttpMethod.GET, entity, new ParameterizedTypeReference<Wrapper<OfficeView>>() {});
         OfficeView officeView = new OfficeView("3", "OCS Самара", null, "Самара", "true",
                 null, null);
         Assert.assertEquals(officeView, responseEntityId3.getBody().getData());
@@ -163,14 +163,14 @@ public class TestOfficeController {
         office.setName("New");
         office.setAddress("г. Саратов");
         HttpEntity<OfficeViewRequest> entity = new HttpEntity<>(office);
-        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/office/update", HttpMethod.POST,
-                entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
+        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/office/update",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
         Wrapper<ResponseView> wrapper = responseEntity.getBody();
         Assert.assertEquals(new ResponseView("success"), wrapper.getData());
         Assert.assertEquals(200, responseEntity.getStatusCodeValue());
 
-        ResponseEntity<Wrapper<OfficeView>> responseChangedEntity = restTemplate.exchange("/api/office/1", HttpMethod.GET,
-                entity, new ParameterizedTypeReference<Wrapper<OfficeView>>() {});
+        ResponseEntity<Wrapper<OfficeView>> responseChangedEntity = restTemplate.exchange("/api/office/1",
+                HttpMethod.GET, entity, new ParameterizedTypeReference<Wrapper<OfficeView>>() {});
         Wrapper<OfficeView> responseWrapper = responseChangedEntity.getBody();
         OfficeView officeView = new OfficeView("1", "New", "+7(845)222-22-33",
                 "г. Саратов","true", null, null);
@@ -187,8 +187,8 @@ public class TestOfficeController {
         office.setOrgId("1");
         office.setName("ОФИС ОРГАНИЗАЦИИ");
         HttpEntity<OfficeViewRequest> entity = new HttpEntity<>(office);
-        ResponseEntity<Wrapper<List<OfficeView>>> responseEntity = restTemplate.exchange("/api/office/list", HttpMethod.POST,
-                entity, new ParameterizedTypeReference<Wrapper<List<OfficeView>>>() {});
+        ResponseEntity<Wrapper<List<OfficeView>>> responseEntity = restTemplate.exchange("/api/office/list",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<Wrapper<List<OfficeView>>>() {});
         Wrapper<List<OfficeView>> wrapper = responseEntity.getBody();
 
         OfficeView officeView = new OfficeView("1", "Офис Организации", null,

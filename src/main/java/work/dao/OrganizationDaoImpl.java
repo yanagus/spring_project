@@ -40,6 +40,7 @@ public class OrganizationDaoImpl extends AbstractDao<Organization, Integer> {
      *
      * @param entity организация
      */
+    @Override
     public void update(Organization entity) {
         Organization organization = entityManager.find(Organization.class, entity.getId());
         organization.setName(entity.getName());

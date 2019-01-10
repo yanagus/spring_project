@@ -86,8 +86,8 @@ public class TestOrganizationController {
         restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
         HttpHeaders headers = restTemplate.headForHeaders("/api/organization/2");
         HttpEntity entity = new HttpEntity(headers);
-        ResponseEntity<Wrapper<OrganizationView>> responseEntity = restTemplate.exchange("/api/organization/2", HttpMethod.GET,
-                entity, new ParameterizedTypeReference<Wrapper<OrganizationView>>() {});
+        ResponseEntity<Wrapper<OrganizationView>> responseEntity = restTemplate.exchange("/api/organization/2",
+                HttpMethod.GET, entity, new ParameterizedTypeReference<Wrapper<OrganizationView>>() {});
         Wrapper<OrganizationView> wrapper = responseEntity.getBody();
         OrganizationView organizationView = new OrganizationView("2", "OCS", "OCS Distribution",
                 "1234567890","123456789",
@@ -105,8 +105,8 @@ public class TestOrganizationController {
         restTemplate = new RestTemplate(new MockMvcClientHttpRequestFactory(mockMvc));
         HttpHeaders headers = restTemplate.headForHeaders("/api/organization/1.3");
         HttpEntity entity = new HttpEntity(headers);
-        ResponseEntity<ErrorWrapper<ResponseMessage>> responseEntity = restTemplate.exchange("/api/organization/1.3", HttpMethod.GET,
-                entity, new ParameterizedTypeReference<ErrorWrapper<ResponseMessage>>() {});
+        ResponseEntity<ErrorWrapper<ResponseMessage>> responseEntity = restTemplate.exchange("/api/organization/1.3",
+                HttpMethod.GET, entity, new ParameterizedTypeReference<ErrorWrapper<ResponseMessage>>() {});
         Assert.assertEquals(404, responseEntity.getStatusCodeValue());
         ErrorWrapper<ResponseMessage> error = responseEntity.getBody();
         ResponseMessage responseMsg = new ResponseMessage("организация с id 1.3 не найдена");
@@ -128,16 +128,16 @@ public class TestOrganizationController {
         organization.setAddress("Москва");
         organization.setIsActive("TRUE");
         HttpEntity<OrganizationViewRequest> entity = new HttpEntity<>(organization);
-        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/organization/save", HttpMethod.POST,
-                entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
+        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/organization/save",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
         Wrapper<ResponseView> wrapper = responseEntity.getBody();
         Assert.assertEquals(new ResponseView("success"), wrapper.getData());
         Assert.assertEquals(201, responseEntity.getStatusCodeValue());
 
-        ResponseEntity<Wrapper<OrganizationView>> responseEntityId3 = restTemplate.exchange("/api/organization/3", HttpMethod.GET,
-                entity, new ParameterizedTypeReference<Wrapper<OrganizationView>>() {});
-        OrganizationView organizationView = new OrganizationView(null, "название", "полн.название", "1111111111", "000000000",
-                "Москва", null, "true", null);
+        ResponseEntity<Wrapper<OrganizationView>> responseEntityId3 = restTemplate.exchange("/api/organization/3",
+                HttpMethod.GET, entity, new ParameterizedTypeReference<Wrapper<OrganizationView>>() {});
+        OrganizationView organizationView = new OrganizationView(null, "название", "полн.название",
+                "1111111111", "000000000", "Москва", null, "true", null);
         organizationView.setId("3");
         Assert.assertEquals(organizationView, responseEntityId3.getBody().getData());
     }
@@ -155,8 +155,8 @@ public class TestOrganizationController {
                 HttpMethod.POST, entity, new ParameterizedTypeReference<ErrorWrapper<ResponseMessage>>() {});
         Assert.assertEquals(400, responseEntity.getStatusCodeValue());
         ErrorWrapper<ResponseMessage> error = responseEntity.getBody();
-        ResponseMessage responseMsg =
-                new ResponseMessage("введите название организации, организация с таким ИНН уже существует в базе данных, введите адрес организации");
+        ResponseMessage responseMsg = new ResponseMessage(
+                "введите название организации, организация с таким ИНН уже существует в базе данных, введите адрес организации");
         ErrorWrapper<ResponseMessage> error2 = new ErrorWrapper<>(responseMsg);
         Assert.assertEquals(error2, error);
     }
@@ -176,14 +176,14 @@ public class TestOrganizationController {
         organization.setAddress("108811, г. Москва, Киевское шоссе, Румянцево, офисный парк «Комсити» д.6 стр.1");
         organization.setPhone("0000");
         HttpEntity<OrganizationViewRequest> entity = new HttpEntity<>(organization);
-        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/organization/update", HttpMethod.POST,
-                entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
+        ResponseEntity<Wrapper<ResponseView>> responseEntity = restTemplate.exchange("/api/organization/update",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<Wrapper<ResponseView>>() {});
         Wrapper<ResponseView> wrapper = responseEntity.getBody();
         Assert.assertEquals(new ResponseView("success"), wrapper.getData());
         Assert.assertEquals(200, responseEntity.getStatusCodeValue());
 
-        ResponseEntity<Wrapper<OrganizationView>> responseChangedEntity = restTemplate.exchange("/api/organization/2", HttpMethod.GET,
-                entity, new ParameterizedTypeReference<Wrapper<OrganizationView>>() {});
+        ResponseEntity<Wrapper<OrganizationView>> responseChangedEntity = restTemplate.exchange("/api/organization/2",
+                HttpMethod.GET, entity, new ParameterizedTypeReference<Wrapper<OrganizationView>>() {});
         Wrapper<OrganizationView> responseWrapper = responseChangedEntity.getBody();
         OrganizationView organizationResponse = new OrganizationView("2", "New Org", "New Org",
                 "1234567777","123456780",
@@ -202,8 +202,8 @@ public class TestOrganizationController {
         organization.setName("ОРГ");
         organization.setInn(" 0123456789 ");
         HttpEntity<OrganizationViewRequest> entity = new HttpEntity<>(organization);
-        ResponseEntity<Wrapper<List<OrganizationView>>> responseEntity = restTemplate.exchange("/api/organization/list", HttpMethod.POST,
-                entity, new ParameterizedTypeReference<Wrapper<List<OrganizationView>>>() {});
+        ResponseEntity<Wrapper<List<OrganizationView>>> responseEntity = restTemplate.exchange("/api/organization/list",
+                HttpMethod.POST, entity, new ParameterizedTypeReference<Wrapper<List<OrganizationView>>>() {});
         Wrapper<List<OrganizationView>> wrapper = responseEntity.getBody();
 
         OrganizationView organizationView = new OrganizationView("1", "Орг", null,

@@ -54,8 +54,8 @@ public class TestCatalogController {
     public void testCountriesList() {
         HttpHeaders headers = restTemplate.headForHeaders("/api/countries");
         HttpEntity entity = new HttpEntity(headers);
-        ResponseEntity<Wrapper<List<CountryView>>> responseEntity = restTemplate.exchange("/api/countries", HttpMethod.GET,
-                entity, new ParameterizedTypeReference<Wrapper<List<CountryView>>>() {});
+        ResponseEntity<Wrapper<List<CountryView>>> responseEntity = restTemplate.exchange("/api/countries",
+                HttpMethod.GET, entity, new ParameterizedTypeReference<Wrapper<List<CountryView>>>() {});
         Wrapper<List<CountryView>> wrapper = responseEntity.getBody();
 
         CountryView country = new CountryView("643", "Российская Федерация");
@@ -73,8 +73,8 @@ public class TestCatalogController {
     public void testDocumentsList() {
         HttpHeaders headers = restTemplate.headForHeaders("/api/docs");
         HttpEntity entity = new HttpEntity(headers);
-        ResponseEntity<Wrapper<List<DocumentView>>> responseEntity = restTemplate.exchange("/api/docs", HttpMethod.GET,
-                entity, new ParameterizedTypeReference<Wrapper<List<DocumentView>>>() {});
+        ResponseEntity<Wrapper<List<DocumentView>>> responseEntity = restTemplate.exchange("/api/docs",
+                HttpMethod.GET, entity, new ParameterizedTypeReference<Wrapper<List<DocumentView>>>() {});
         Wrapper<List<DocumentView>> wrapper = responseEntity.getBody();
 
         DocumentView document = new DocumentView("21", "Паспорт гражданина Российской Федерации");

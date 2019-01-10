@@ -47,7 +47,7 @@ public class OfficeViewRequest {
     @Null(message = "адрес должен быть не задан", groups = {Views.FilteredList.class})
     @Size(max = 100, message = "длина адреса не должна превышать 100 символов",
             groups = {Views.SaveView.class, Views.UpdateView.class})
-    @NotEmpty(message = "введите адрес организации", groups = {Views.UpdateView.class})
+    @NotEmpty(message = "введите адрес офиса", groups = {Views.UpdateView.class})
     private String address;
 
     /**
